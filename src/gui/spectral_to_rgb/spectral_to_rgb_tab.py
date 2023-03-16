@@ -9,3 +9,6 @@ class SpectralToRGBTab(QtWidgets.QWidget):
         self.band_selector = BandSelector()
         layout.addWidget(self.band_selector)
         self.setLayout(layout)
+
+    def get_bands(self):
+        return self.band_selector.get_bands()

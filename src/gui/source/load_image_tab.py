@@ -4,7 +4,7 @@ from src.util import load_spectral_image
 from src import MIN_WAVELENGTH, MAX_WAVELENGTH
 
 
-class LoadImageTab(QtWidgets.QWidget):
+class SourceTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         layout = QtWidgets.QGridLayout()

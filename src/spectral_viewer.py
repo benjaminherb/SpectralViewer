@@ -1,8 +1,9 @@
 from PyQt6 import QtWidgets, QtGui
 import cv2
 import numpy as np
-from src.util import load_spectral_image, spectral_to_rgb_from_bands
-from src.gui.control_widget import ControlWidget
+from src.util import spectral_to_rgb_from_bands
+from src.gui.source.load_image_tab import SourceTab
+from src.gui.spectral_to_rgb.spectral_to_rgb_tab import SpectralToRGBTab
 
 
 class SpectralViewer(QtWidgets.QMainWindow):
@@ -11,8 +12,29 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         self.main_widget = QtWidgets.QWidget()
         self.main_layout = QtWidgets.QHBoxLayout()
-        self.control_widget = ControlWidget()
-        self.control_widget.update_signal.connect(self.load_image)
+
+        # control panel
+        self.control_widget = QtWidgets.QWidget()
+        self.control_widget.setMinimumWidth(800)
+
+        # tabs
+        self.load_image_tab = SourceTab()
+        self.spectral_to_rgb_tab = SpectralToRGBTab()
+
+        self.tabs = QtWidgets.QTabWidget()
+        self.tabs.addTab(self.load_image_tab, "Source")
+        self.tabs.addTab(QtWidgets.QWidget(), "Spectral Operations")
+        self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
+        self.tabs.addTab(QtWidgets.QWidget(), "RGB Operations")
+        self.tabs.addTab(QtWidgets.QWidget(), "Export")
+
+        self.refresh_button = QtWidgets.QPushButton("Refresh")
+        self.refresh_button.pressed.connect(self.load_image)
+
+        self.control_layout = QtWidgets.QGridLayout()
+        self.control_layout.addWidget(self.tabs)
+        self.control_layout.addWidget(self.refresh_button)
+        self.control_widget.setLayout(self.control_layout)
 
         self.image = QtWidgets.QLabel()
         self.main_layout.addWidget(self.image)
@@ -23,16 +45,10 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.load_image()
 
     def load_image(self):
-        self.control_widget.load_image_tab.load_image()
-        spectral_image = self.control_widget.load_image_tab.spectral_image
-        bands = self.control_widget.load_image_tab.bands
-        # image_path = self.control_widget.load_image_tab.get_path()
-        # try:
-            # spectral_image, bands = load_spectral_image(image_path)
-        # except OSError as e:
-            # print(e)
-            # return
-        rgb = spectral_to_rgb_from_bands(spectral_image, self.control_widget.get_bands())
+        self.load_image_tab.load_image()
+        spectral_image = self.load_image_tab.spectral_image
+        bands = self.load_image_tab.bands
+        rgb = spectral_to_rgb_from_bands(spectral_image, self.spectral_to_rgb_tab.get_bands())
         rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
         h, w, d = rgb.shape
         q_image = QtGui.QImage(rgb.data.tobytes(), w, h, d * w, QtGui.QImage.Format.Format_RGB888)
