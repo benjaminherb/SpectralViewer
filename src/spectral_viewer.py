@@ -8,6 +8,7 @@ from src.gui.control_widget import ControlWidget
 class SpectralViewer(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.main_widget = QtWidgets.QWidget()
         self.main_layout = QtWidgets.QHBoxLayout()
         self.control_widget = ControlWidget()

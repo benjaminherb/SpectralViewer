@@ -1,0 +1,11 @@
+from PyQt6 import QtWidgets
+from src.gui.spectral_to_rgb.band_selector import BandSelector
+
+
+class SpectralToRGBTab(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QtWidgets.QVBoxLayout()
+        self.band_selector = BandSelector()
+        layout.addWidget(self.band_selector)
+        self.setLayout(layout)
