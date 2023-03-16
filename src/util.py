@@ -12,7 +12,7 @@ def load_spectral_image(path):
     return spectral_image, bands
 
 
-def spectral_to_rgb(spectral_image, bands=(3, 13, 23)):
+def spectral_to_rgb_from_bands(spectral_image, bands=(20, 13, 3)):
     return np.stack((spectral_image[:, :, bands[0]],
                      spectral_image[:, :, bands[1]],
                      spectral_image[:, :, bands[2]]), axis=2)

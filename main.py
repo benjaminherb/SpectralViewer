@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from PyQt6 import QtWidgets, QtCore
 import cv2
-from src.util import load_spectral_image, spectral_to_rgb
+from src.util import load_spectral_image, spectral_to_rgb_from_bands
 from src.spectral_viewer import SpectralViewer
 
 
