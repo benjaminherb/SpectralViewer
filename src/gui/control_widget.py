@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets, QtCore
 from src.gui.spectral_to_rgb.spectral_to_rgb_tab import SpectralToRGBTab
+from src.gui.load_image.load_image_tab import LoadImageTab
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -12,9 +13,10 @@ class ControlWidget(QtWidgets.QWidget):
 
         self.tabs = QtWidgets.QTabWidget()
 
+        self.load_image_tab = LoadImageTab()
         self.spectral_to_rgb_tab = SpectralToRGBTab()
 
-        self.tabs.addTab(QtWidgets.QWidget(), "Load Image")
+        self.tabs.addTab(self.load_image_tab, "Load Image")
         self.tabs.addTab(QtWidgets.QWidget(), "Spectral Operations")
         self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
         self.tabs.addTab(QtWidgets.QWidget(), "RGB Operations")

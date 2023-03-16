@@ -23,7 +23,15 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.load_image()
 
     def load_image(self):
-        spectral_image, bands = load_spectral_image("./res/images/ARAD_1K_0098.mat")
+        self.control_widget.load_image_tab.load_image()
+        spectral_image = self.control_widget.load_image_tab.spectral_image
+        bands = self.control_widget.load_image_tab.bands
+        # image_path = self.control_widget.load_image_tab.get_path()
+        # try:
+            # spectral_image, bands = load_spectral_image(image_path)
+        # except OSError as e:
+            # print(e)
+            # return
         rgb = spectral_to_rgb_from_bands(spectral_image, self.control_widget.get_bands())
         rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
         h, w, d = rgb.shape
