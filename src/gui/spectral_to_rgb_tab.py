@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from src.gui.spectral_to_rgb.band_selector import BandSelector
+from src.gui.band_selector import BandSelector
 
 
 class SpectralToRGBTab(QtWidgets.QWidget):

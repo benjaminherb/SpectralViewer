@@ -1,6 +1,6 @@
 import os
 from PyQt6 import QtWidgets, QtGui, QtCore
-from src.util import load_spectral_image
+from src.load.load_image import load_spectral_image
 from src import MIN_WAVELENGTH, MAX_WAVELENGTH
 
 

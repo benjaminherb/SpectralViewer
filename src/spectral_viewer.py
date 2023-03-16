@@ -1,9 +1,9 @@
 from PyQt6 import QtWidgets, QtGui
-import cv2
 import numpy as np
-from src.util import spectral_to_rgb_from_bands
-from src.gui.source.load_image_tab import SourceTab
-from src.gui.spectral_to_rgb.spectral_to_rgb_tab import SpectralToRGBTab
+from src.conversions.spectral_to_rgb import spectral_to_rgb_using_bands
+from src.gui.source_tab import SourceTab
+from src.gui.spectral_to_rgb_tab import SpectralToRGBTab
+from src.load.load_observer import load_observer
 
 
 class SpectralViewer(QtWidgets.QMainWindow):
@@ -18,11 +18,11 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.control_widget.setMinimumWidth(800)
 
         # tabs
-        self.load_image_tab = SourceTab()
+        self.source_tab = SourceTab()
         self.spectral_to_rgb_tab = SpectralToRGBTab()
 
         self.tabs = QtWidgets.QTabWidget()
-        self.tabs.addTab(self.load_image_tab, "Source")
+        self.tabs.addTab(self.source_tab, "Source")
         self.tabs.addTab(QtWidgets.QWidget(), "Spectral Operations")
         self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
         self.tabs.addTab(QtWidgets.QWidget(), "RGB Operations")
@@ -45,11 +45,13 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.load_image()
 
     def load_image(self):
-        self.load_image_tab.load_image()
-        spectral_image = self.load_image_tab.spectral_image
-        bands = self.load_image_tab.bands
-        rgb = spectral_to_rgb_from_bands(spectral_image, self.spectral_to_rgb_tab.get_bands())
+        self.source_tab.load_image()
+        spectral_image = self.source_tab.spectral_image
+        bands = self.source_tab.bands
+        rgb = spectral_to_rgb_using_bands(spectral_image, self.spectral_to_rgb_tab.get_bands())
         rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
         h, w, d = rgb.shape
         q_image = QtGui.QImage(rgb.data.tobytes(), w, h, d * w, QtGui.QImage.Format.Format_RGB888)
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
+
+        load_observer()
