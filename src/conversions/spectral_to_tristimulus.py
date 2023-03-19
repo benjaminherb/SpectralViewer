@@ -11,12 +11,11 @@ def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):
 
 def spectral_to_XYZ_using_cie_observer(spectral_image):
     observer = load_observer(400, 700, 10)
-    X = np.apply_along_axis(lambda v: np.dot(v, observer[:, 0]), axis=2, arr=spectral_image)
-    Y = np.apply_along_axis(lambda v: np.dot(v, observer[:, 1]), axis=2, arr=spectral_image)
-    Z = np.apply_along_axis(lambda v: np.dot(v, observer[:, 2]), axis=2, arr=spectral_image)
+    # X = np.apply_along_axis(lambda v: np.dot(v, observer[:, 0]), axis=2, arr=spectral_image)
+    X = np.dot(spectral_image, observer[:, 0])
+    Y = np.dot(spectral_image, observer[:, 1])
+    Z = np.dot(spectral_image, observer[:, 2])
     XYZ = np.stack((X, Y, Z), axis=2)
-    print(XYZ.min())
-    print(XYZ.max())
     return XYZ / XYZ.max()  # scale to 1
 
 

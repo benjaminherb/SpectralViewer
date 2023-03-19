@@ -11,3 +11,9 @@ def XYZ_to_RGB(XYZ_image):
     RGB_image = np.apply_along_axis(lambda v: np.dot(v, XYZ_to_RGB_matrix.T), axis=2,
                                     arr=XYZ_image)
     return RGB_image.reshape(XYZ_image.shape)
+
+
+def linear_to_sRGB(v):
+    np.seterr('raise')
+    return ((v > 0.0031308) * (1.055 * np.power(v, (1 / 2.4)) - 0.055)
+            + (v <= 0.0031308) * (v * 12.92))

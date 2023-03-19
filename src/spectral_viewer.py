@@ -5,6 +5,7 @@ from src.gui.source_tab import SourceTab
 from src.gui.spectral_to_rgb_tab import SpectralToRGBTab
 from src.conversions.spectral_to_tristimulus import spectral_to_XYZ_using_cie_observer, \
     spectral_to_RGB_using_cie_observer
+from src.conversions.tristimulus import linear_to_sRGB
 
 
 class SpectralViewer(QtWidgets.QMainWindow):
@@ -49,6 +50,8 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.source_tab.load_image()
         spectral_image = self.source_tab.spectral_image
         rgb = self.spectral_to_rgb_tab.process(spectral_image)
+        rgb = rgb.clip(min=0)
+        rgb = linear_to_sRGB(rgb)
         rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
         rgb = np.clip(rgb, a_max=255, a_min=0)
         h, w, d = rgb.shape
