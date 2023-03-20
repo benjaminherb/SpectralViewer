@@ -1,0 +1,9 @@
+name: SpectralViewer
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - h5py
+  - pip
+  - pip:
+      - PyQt6
