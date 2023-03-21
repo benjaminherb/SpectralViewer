@@ -4,6 +4,7 @@ dependencies:
   - numpy
   - pandas
   - h5py
+  - pyqtgraph
   - pip
   - pip:
       - PyQt6
