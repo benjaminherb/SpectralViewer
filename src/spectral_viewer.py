@@ -4,6 +4,7 @@ from src.gui.source_tab import SourceTab
 from src.gui.spectral_to_rgb_tab import SpectralToRGBTab
 from src.conversions.tristimulus import linear_to_sRGB
 from src.gui.picker_tab import PickerTab
+from src.gui.preview_image import PreviewImage
 
 
 class SpectralViewer(QtWidgets.QMainWindow):
@@ -40,15 +41,14 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.control_layout.addWidget(self.refresh_button)
         self.control_widget.setLayout(self.control_layout)
 
-        self.image = QtWidgets.QLabel()
-        self.image.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                                 QtWidgets.QSizePolicy.Policy.Fixed)
+        self.image = PreviewImage()
+        self.image.mouse_moved.connect(self.mouse_move_over_image)
+        self.image.mouse_clicked.connect(self.mouse_clicked_on_image)
 
         self.main_layout.addWidget(self.image)
         self.main_layout.addWidget(self.control_widget)
         self.main_widget.setLayout(self.main_layout)
         self.setCentralWidget(self.main_widget)
-
         self.load_image()
 
     def load_image(self):
@@ -64,10 +64,12 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
 
-    def mousePressEvent(self, event):
+    def mouse_move_over_image(self, x, y):
         if self.picker_tab.isVisible():
-            pixel_position = self.image.mapFromParent(event.pos())
-            spectral_image = self.source_tab.spectral_image
-            self.picker_tab.plot(pixel_position, spectral_image)
+            # pixel_position = self.image.mapFromParent(event.pos())
+            self.picker_tab.show_position((x, y))
 
-        super().mousePressEvent(event)
+    def mouse_clicked_on_image(self, x, y):
+        if self.picker_tab.isVisible():
+            spectral_image = self.source_tab.spectral_image
+            self.picker_tab.plot((x, y), spectral_image)
