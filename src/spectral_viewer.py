@@ -58,7 +58,8 @@ class SpectralViewer(QtWidgets.QMainWindow):
         spectral_image = self.source_tab.spectral_image
         rgb = self.spectral_to_rgb_tab.process(spectral_image)
         rgb = rgb.clip(min=0)
-        rgb = linear_to_sRGB(rgb)
+        rgb = self.rgb_operations_tab.process(rgb)
+        # rgb = linear_to_sRGB(rgb)
         rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
         rgb = np.clip(rgb, a_max=255, a_min=0)
         h, w, d = rgb.shape

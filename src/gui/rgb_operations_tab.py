@@ -9,7 +9,7 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
         self.new_operation_selector = QtWidgets.QComboBox()
         self.new_operation_selector.addItem("Change transfer curve")
-        self.add_new_operation_button = QtWidgets.QPushButton("Add")
+        self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_layout = QtWidgets.QHBoxLayout()
         self.add_layout.addWidget(self.new_operation_selector)
@@ -53,3 +53,13 @@ class RGBOperationsTab(QtWidgets.QWidget):
             upper_widget = self.operations_layout.itemAt(moved_index).widget()
             self.operations_layout.insertWidget(moved_index, current_widget)
             self.operations_layout.insertWidget(current_index, upper_widget)
+
+    def process(self, image):
+
+        for index in range(self.operations_layout.count()):
+            operation = self.operations_layout.itemAt(index).widget()
+            if not operation:
+                continue
+            image = operation.process(image)
+
+        return image
