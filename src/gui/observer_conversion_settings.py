@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui, QtCore
 
 
 class ObserverConversion(QtWidgets.QWidget):
