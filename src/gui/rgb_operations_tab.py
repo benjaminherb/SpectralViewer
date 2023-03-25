@@ -23,13 +23,8 @@ class RGBOperationsTab(QtWidgets.QWidget):
         self.layout.addStretch()
         self.setLayout(self.layout)
 
-        self.update_operations()
-
-    def update_operations(self):
-        for operation in self.operations:
-            self.operations_layout.addWidget(operation)
-        self.setLayout(self.layout)
-        print("Update Operations")
+        # default operations
+        self._add_operation()
 
     def _add_operation(self):
         new_widget = ChangeTransferCurveModule()

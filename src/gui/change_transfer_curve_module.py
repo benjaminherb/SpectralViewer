@@ -10,12 +10,14 @@ class ChangeTransferCurveModule(QtWidgets.QWidget):
         self.input_selector = QtWidgets.QComboBox()
         self.input_selector.addItem("Linear")
         self.input_selector.addItem("sRGB")
+        self.input_selector.setCurrentText("Linear")
 
         self.to_label = QtWidgets.QLabel("to")
 
         self.output_selector = QtWidgets.QComboBox()
         self.output_selector.addItem("Linear")
         self.output_selector.addItem("sRGB")
+        self.output_selector.setCurrentText("sRGB")
 
         self.up_button = QtWidgets.QPushButton("Up")
         self.down_button = QtWidgets.QPushButton("Down")
