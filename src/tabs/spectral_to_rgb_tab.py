@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets
-from src.gui.band_selector import BandSelector
-from src.gui.observer_conversion_settings import ObserverConversion
+from src.spectral_to_rgb_modules.band_selector import BandSelector
+from src.spectral_to_rgb_modules.observer_conversion_settings import ObserverConversion
 from src.conversions.spectral_to_tristimulus import spectral_to_RGB_using_cie_observer, \
     spectral_to_XYZ_using_cie_observer, spectral_to_rgb_using_bands
 
@@ -20,7 +20,7 @@ class SpectralToRGBTab(QtWidgets.QWidget):
         self.band_radio = QtWidgets.QRadioButton("Conversion using three spectral bands",
                                                  self.radio_group)
         self.band_radio.toggled.connect(self._update_radio_selection)
-        self.band_radio.toggle()
+        self.observer_radio.toggle()
 
         layout = QtWidgets.QGridLayout()
 

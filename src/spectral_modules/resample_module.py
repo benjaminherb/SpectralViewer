@@ -5,7 +5,7 @@ class SpectralResampleModule(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setToolTip("Resample image to a lower spectral resolution")
+        self.setToolTip("Resample image to a lower spectral resolution using linear interpolation")
 
         self.setAutoFillBackground(True)
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)

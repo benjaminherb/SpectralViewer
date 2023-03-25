@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from src.gui.change_transfer_curve_module import ChangeTransferCurveModule
+from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
 
 
 class RGBOperationsTab(QtWidgets.QWidget):

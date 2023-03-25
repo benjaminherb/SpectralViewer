@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets
-from src.gui.resample_module import SpectralResampleModule
+from src.spectral_modules.resample_module import SpectralResampleModule
 
 
 class SpectralOperationsTab(QtWidgets.QWidget):

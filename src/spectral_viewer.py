@@ -1,10 +1,10 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
-from src.gui.source_tab import SourceTab
-from src.gui.spectral_to_rgb_tab import SpectralToRGBTab
-from src.gui.picker_tab import PickerTab
-from src.gui.rgb_operations_tab import RGBOperationsTab
-from src.gui.spectral_operations_tab import SpectralOperationsTab
+from src.tabs.source_tab import SourceTab
+from src.tabs.spectral_to_rgb_tab import SpectralToRGBTab
+from src.tabs.picker_tab import PickerTab
+from src.tabs.rgb_operations_tab import RGBOperationsTab
+from src.tabs.spectral_operations_tab import SpectralOperationsTab
 from src.gui.preview_image import PreviewImage
 
 

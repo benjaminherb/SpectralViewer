@@ -1,6 +1,6 @@
 import numpy as np
 from src.conversions.tristimulus import XYZ_to_RGB
-from src.load.load_observer import load_observer
+from src.data_loader.load_observer import load_observer
 
 
 def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):

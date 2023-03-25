@@ -1,6 +1,6 @@
 import numpy as np
 from src.conversions.matrices import get_XYZ_to_RGB_matrix
-from src.load.load_primaries import load_primaries
+from src.data_loader.load_primaries import load_primaries
 
 
 def XYZ_to_RGB(XYZ_image):
