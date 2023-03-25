@@ -2,9 +2,9 @@ from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
 from src.gui.source_tab import SourceTab
 from src.gui.spectral_to_rgb_tab import SpectralToRGBTab
-from src.conversions.tristimulus import linear_to_sRGB
 from src.gui.picker_tab import PickerTab
 from src.gui.rgb_operations_tab import RGBOperationsTab
+from src.gui.spectral_operations_tab import SpectralOperationsTab
 from src.gui.preview_image import PreviewImage
 
 
@@ -23,6 +23,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         # tabs
         self.source_tab = SourceTab()
+        self.spectral_operations_tab = SpectralOperationsTab()
         self.spectral_to_rgb_tab = SpectralToRGBTab()
         self.rgb_operations_tab = RGBOperationsTab()
         self.picker_tab = PickerTab()
@@ -30,7 +31,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.addTab(self.source_tab, "Source")
         self.tabs.addTab(self.picker_tab, "Pixel Picker")
-        self.tabs.addTab(QtWidgets.QWidget(), "Spectral Operations")
+        self.tabs.addTab(self.spectral_operations_tab, "Spectral Operations")
         self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
         self.tabs.addTab(self.rgb_operations_tab, "RGB Operations")
         self.tabs.addTab(QtWidgets.QWidget(), "Export")
