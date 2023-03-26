@@ -38,10 +38,11 @@ class SpectralToRGBTab(QtWidgets.QWidget):
         if self.band_radio.isChecked():
             image = spectral_to_rgb_using_bands(spectral_image, self.band_selector.get_bands())
         elif self.observer_radio.isChecked():
+            step_size = self.observer_settings.get_step_size()
             if self.observer_settings.get_output() == "XYZ":
-                image = spectral_to_XYZ_using_cie_observer(spectral_image)
+                image = spectral_to_XYZ_using_cie_observer(spectral_image, step_size)
             elif self.observer_settings.get_output() == "sRGB":
-                image = spectral_to_RGB_using_cie_observer(spectral_image)
+                image = spectral_to_RGB_using_cie_observer(spectral_image, step_size)
             else:
                 raise Exception("Unknown observer output")
 

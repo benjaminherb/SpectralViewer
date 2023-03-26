@@ -7,6 +7,9 @@ class SpectralImage:
         self.minimum_wavelength = minimum_wavelength
         self.maximum_wavelength = maximum_wavelength
 
+    def get_wavelengths(self):
+        return np.linspace(self.minimum_wavelength, self.maximum_wavelength, self.depth())
+
     def get_wavelength_step(self):
         return (self.maximum_wavelength - self.minimum_wavelength) / (self.depth() - 1)
 
