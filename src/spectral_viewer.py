@@ -55,8 +55,8 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.load_image()
 
     def load_image(self):
-        self.source_tab.load_image()
-        spectral_image = self.source_tab.spectral_image
+        spectral_image = self.source_tab.get_image()
+        spectral_image = self.spectral_operations_tab.process(spectral_image)
         rgb = self.spectral_to_rgb_tab.process(spectral_image)
         rgb = rgb.clip(min=0)
         rgb = self.rgb_operations_tab.process(rgb)

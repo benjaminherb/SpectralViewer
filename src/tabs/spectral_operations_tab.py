@@ -62,7 +62,6 @@ class SpectralOperationsTab(QtWidgets.QWidget):
             self.operations_layout.insertWidget(current_index, upper_widget)
 
     def process(self, image):
-
         for index in range(self.operations_layout.count()):
             operation = self.operations_layout.itemAt(index).widget()
             if not operation:

@@ -1,7 +1,7 @@
 import os
 from PyQt6 import QtWidgets, QtGui, QtCore
 from src.data_loader.load_image import load_spectral_image
-from src import MIN_WAVELENGTH, MAX_WAVELENGTH
+from src.util.spectral_image import SpectralImage
 
 
 class SourceTab(QtWidgets.QWidget):
@@ -53,10 +53,16 @@ class SourceTab(QtWidgets.QWidget):
             value_type = self.spectral_image.dtype.name
             value_min = self.spectral_image.min()
             value_max = self.spectral_image.max()
+
+        max_wavelength, min_wavelength = ('-', '-')
+        if self.bands is not None:
+            min_wavelength = self.bands.min()
+            max_wavelength = self.bands.max()
+
         self.metadata_table.setItem(1, 0, QtWidgets.QTableWidgetItem(f'{w} x {h}'))
         self.metadata_table.setItem(2, 0, QtWidgets.QTableWidgetItem(f'{d}'))
-        self.metadata_table.setItem(3, 0, QtWidgets.QTableWidgetItem(f'{MIN_WAVELENGTH}nm'))
-        self.metadata_table.setItem(4, 0, QtWidgets.QTableWidgetItem(f'{MAX_WAVELENGTH}nm'))
+        self.metadata_table.setItem(3, 0, QtWidgets.QTableWidgetItem(f'{min_wavelength} nm'))
+        self.metadata_table.setItem(4, 0, QtWidgets.QTableWidgetItem(f'{max_wavelength} nm'))
         self.metadata_table.setItem(5, 0, QtWidgets.QTableWidgetItem(f'{value_type}'))
         self.metadata_table.setItem(6, 0, QtWidgets.QTableWidgetItem(f'{value_min}'))
         self.metadata_table.setItem(7, 0, QtWidgets.QTableWidgetItem(f'{value_max}'))
@@ -72,3 +78,9 @@ class SourceTab(QtWidgets.QWidget):
         except OSError as e:
             print(e)
             return
+
+    def get_image(self):
+        self.load_image()
+        return SpectralImage(self.spectral_image,
+                             minimum_wavelength=self.bands.min(),
+                             maximum_wavelength=self.bands.max())
