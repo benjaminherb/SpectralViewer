@@ -10,9 +10,9 @@ class SpectralImage:
     def get_wavelength_step(self):
         return (self.maximum_wavelength - self.minimum_wavelength) / (self.depth() - 1)
 
-    def get_dimension(self, dimension=None):
+    def get_dimension(self, dimension=-1):
         shape = self.data.shape
-        if dimension and dimension in range(3):
+        if dimension in range(3):
             return shape[dimension]
 
         return self.data.shape

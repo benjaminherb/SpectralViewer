@@ -17,7 +17,6 @@ class SpectralOperationsTab(QtWidgets.QWidget):
         self.add_operation_layout = QtWidgets.QHBoxLayout()
         self.add_operation_layout.addWidget(self.new_operation_selector, 3)
         self.add_operation_layout.addWidget(self.add_new_operation_button)
-        print(self.add_operation_layout.getContentsMargins())
         self.add_operation_layout.setContentsMargins(0, 5, 0, 5)
 
         self.operations_layout = QtWidgets.QVBoxLayout()

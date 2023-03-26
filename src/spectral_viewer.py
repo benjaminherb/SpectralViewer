@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
+import copy
 from src.tabs.source_tab import SourceTab
 from src.tabs.spectral_to_rgb_tab import SpectralToRGBTab
 from src.tabs.picker_tab import PickerTab
@@ -75,5 +76,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
     def mouse_clicked_on_image(self, x, y):
         if self.picker_tab.isVisible():
-            spectral_image = self.source_tab.spectral_image
-            self.picker_tab.plot((x, y), spectral_image)
+            spectral_image = self.source_tab.get_image()
+            processed_spectral_image = self.spectral_operations_tab.process(
+                copy.deepcopy(spectral_image))
+            self.picker_tab.plot((x, y), spectral_image, processed_spectral_image)
