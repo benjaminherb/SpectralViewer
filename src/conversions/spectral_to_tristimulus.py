@@ -5,9 +5,9 @@ import scipy
 
 
 def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):
-    return np.stack((spectral_image[:, :, bands[0]],
-                     spectral_image[:, :, bands[1]],
-                     spectral_image[:, :, bands[2]]), axis=2)
+    return np.stack((spectral_image.data[:, :, bands[0]],
+                     spectral_image.data[:, :, bands[1]],
+                     spectral_image.data[:, :, bands[2]]), axis=2)
 
 
 def spectral_to_XYZ_using_cie_observer(spectral_image, step_size):

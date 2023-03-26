@@ -35,8 +35,12 @@ class SpectralToRGBTab(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def process(self, spectral_image):
+        # update values if the min/max wavelength or depth changed
+        self.band_selector.update_values(spectral_image)
+
         if self.band_radio.isChecked():
             image = spectral_to_rgb_using_bands(spectral_image, self.band_selector.get_bands())
+
         elif self.observer_radio.isChecked():
             step_size = self.observer_settings.get_step_size()
             if self.observer_settings.get_output() == "XYZ":

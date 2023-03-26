@@ -30,6 +30,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.picker_tab = PickerTab()
 
         self.tabs = QtWidgets.QTabWidget()
+        self.tabs.tabBarClicked.connect(self.tab_bar_was_clicked)
         self.tabs.addTab(self.source_tab, "Source")
         self.tabs.addTab(self.picker_tab, "Pixel Picker")
         self.tabs.addTab(self.spectral_operations_tab, "Spectral Operations")
@@ -68,6 +69,13 @@ class SpectralViewer(QtWidgets.QMainWindow):
         q_image = QtGui.QImage(rgb.data.tobytes(), w, h, d * w, QtGui.QImage.Format.Format_RGB888)
 
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
+
+    def tab_bar_was_clicked(self, index):
+        if self.tabs.widget(index) == self.picker_tab:
+            spectral_image = self.source_tab.get_image()
+            processed_spectral_image = self.spectral_operations_tab.process(
+                copy.deepcopy(spectral_image))
+            self.picker_tab.update_plot(spectral_image, processed_spectral_image)
 
     def mouse_move_over_image(self, x, y):
         if self.picker_tab.isVisible():

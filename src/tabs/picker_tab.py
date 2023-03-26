@@ -6,6 +6,8 @@ import numpy as np
 class PickerTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.previous_pixel_position = (-1, -1)  # used for updating data without new position
+
         self.pre_pen = pg.mkPen('#0000AA', width=1)
         self.post_pen = pg.mkPen('#AA0000', width=1)
         pg.setConfigOption('foreground', 'k')
@@ -49,6 +51,10 @@ class PickerTab(QtWidgets.QWidget):
                             processed_spectral_image.depth()),
                 processed_spectral_pixel_values,
                 pen=self.post_pen, name="Processed")
+            self.previous_pixel_position = pixel_position
+
+    def update_plot(self, spectral_image, processed_spectral_image):
+        self.plot(self.previous_pixel_position, spectral_image, processed_spectral_image)
 
     def show_position(self, position):
         x, y = position
