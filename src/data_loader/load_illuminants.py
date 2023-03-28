@@ -10,6 +10,8 @@ def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):
         filename = "CIE_std_illum_D50.csv"
     elif illuminant == "CIE A":
         filename = "CIE_std_illum_A_1nm.csv"
+    elif illuminant == "CIE E":
+        filename = "CIE_std_illum_E.csv"
     else:
         raise Exception(f"Illuminant '{illuminant}' could not be found in ./res/illuminants")
 

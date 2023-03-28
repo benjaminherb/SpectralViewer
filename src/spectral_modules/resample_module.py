@@ -15,6 +15,7 @@ class SpectralResampleModule(QtWidgets.QWidget):
         self.label_01 = QtWidgets.QLabel("Resample image to ")
         self.output_band_count = QtWidgets.QSpinBox()
         self.output_band_count.setValue(6)
+        self.output_band_count.setMinimum(2)
         self.label_02 = QtWidgets.QLabel("bands using")
         self.interpolation_selector = QtWidgets.QComboBox()
         self.interpolation_selector.addItems(
