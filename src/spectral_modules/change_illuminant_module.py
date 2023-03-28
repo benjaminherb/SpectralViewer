@@ -13,12 +13,13 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setAutoFillBackground(True)
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
+        illuminants = ['CIE D65', 'CIE D50', 'CIE A', 'CIE E', 'Eiko Halogen']
         self.label_01 = QtWidgets.QLabel("Change illuminant from")
         self.input_illuminant_selector = QtWidgets.QComboBox()
-        self.input_illuminant_selector.addItems(['CIE D65', 'CIE D50', 'CIE A', 'CIE E'])
+        self.input_illuminant_selector.addItems(illuminants)
         self.label_02 = QtWidgets.QLabel("to")
         self.output_illuminant_selector = QtWidgets.QComboBox()
-        self.output_illuminant_selector.addItems(['CIE D65', 'CIE D50', 'CIE A', 'CIE E'])
+        self.output_illuminant_selector.addItems(illuminants)
 
         self.up_button = QtWidgets.QPushButton("Up")
         self.down_button = QtWidgets.QPushButton("Down")

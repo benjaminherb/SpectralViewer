@@ -12,6 +12,8 @@ def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):
         filename = "CIE_std_illum_A_1nm.csv"
     elif illuminant == "CIE E":
         filename = "CIE_std_illum_E.csv"
+    elif illuminant == "Eiko Halogen":
+        filename = "Eiko_Solux_i1_4700k_tungsten_halogen.csv"
     else:
         raise Exception(f"Illuminant '{illuminant}' could not be found in ./res/illuminants")
 
@@ -21,4 +23,7 @@ def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):
         data.index.values, data.values, axis=0, kind=interpolation_method)
     illuminant = interpolation_function(wavelengths)
 
-    return illuminant[:, 0] / 100  # illuminants are scaled to 100 at 560nm
+    # cie illuminants are usually scaled to 100 at 560nm
+    value_at_560nm = interpolation_function(560)
+
+    return illuminant[:, 0] / value_at_560nm
