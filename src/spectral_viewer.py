@@ -58,17 +58,16 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
     def load_image(self):
         spectral_image = self.source_tab.get_image()
-        spectral_image = self.spectral_operations_tab.process(spectral_image)
-        rgb = self.spectral_to_rgb_tab.process(spectral_image)
-        print(rgb.min())
-        rgb = rgb.clip(min=0)
-        rgb = self.rgb_operations_tab.process(rgb)
-        # rgb = linear_to_sRGB(rgb)
-        rgb = ((rgb / rgb.max()) * 255).astype(np.uint8)
-        rgb = np.clip(rgb, a_max=255, a_min=0)
-        h, w, d = rgb.shape
-        q_image = QtGui.QImage(rgb.data.tobytes(), w, h, d * w, QtGui.QImage.Format.Format_RGB888)
 
+        # image processing
+        spectral_image = self.spectral_operations_tab.process(spectral_image)
+        image = self.spectral_to_rgb_tab.process(spectral_image)
+        image = self.rgb_operations_tab.process(image)
+
+        # display image
+        h, w, d = image.shape
+        q_image = QtGui.QImage(image.data.tobytes(), w, h, d * w,
+                               QtGui.QImage.Format.Format_RGB888)
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
 
     def tab_bar_was_clicked(self, index):

@@ -1,10 +1,8 @@
 from PyQt6 import QtWidgets
+from src.conversions.spectral_to_tristimulus import spectral_to_rgb_using_bands
 
 
-# from src import MIN_WAVELENGTH, MAX_WAVELENGTH, BAND_COUNT
-
-
-class BandSelector(QtWidgets.QWidget):
+class BandConversionModule(QtWidgets.QWidget):
     def __init__(self, minimum_wavelength=400, maximum_wavelength=700, bandcount=31):
         super().__init__()
         self.layout = QtWidgets.QHBoxLayout()
@@ -65,3 +63,9 @@ class BandSelector(QtWidgets.QWidget):
                 band.setMaximum(self.maximum_wavelength)
                 band.setSingleStep(step)
                 band.setValue(int(percentage * self.bandcount) * step + self.minimum_wavelength)
+
+    def process(self, spectral_image):
+        # update values if the min/max wavelength or depth changed
+        self.update_values(spectral_image)
+        image = spectral_to_rgb_using_bands(spectral_image, self.get_bands())
+        return image

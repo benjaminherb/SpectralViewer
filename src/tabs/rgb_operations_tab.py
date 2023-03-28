@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
+import numpy as np
 
 
 class RGBOperationsTab(QtWidgets.QWidget):
@@ -64,10 +65,17 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
     def process(self, image):
 
+        # avoid negative values
+        image = image.clip(min=0)
+
         for index in range(self.operations_layout.count()):
             operation = self.operations_layout.itemAt(index).widget()
             if not operation:
                 continue
             image = operation.process(image)
+
+        # scale to valid range
+        image = ((image / image.max()) * 255).astype(np.uint8)
+        # image = np.clip(image, a_max=255, a_min=0)
 
         return image

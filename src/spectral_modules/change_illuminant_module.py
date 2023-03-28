@@ -37,7 +37,6 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
-        print("Changing Illuminant")
         wavelengths = spectral_image.get_wavelengths()
 
         input_illuminant = load_illuminant(

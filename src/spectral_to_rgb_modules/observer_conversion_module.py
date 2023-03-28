@@ -1,10 +1,13 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
+from src.conversions.spectral_to_tristimulus import spectral_to_RGB_using_cie_observer, \
+    spectral_to_XYZ_using_cie_observer
 
 
-class ObserverConversion(QtWidgets.QWidget):
+class ObserverConversionModule(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
+        # Observer
         observer_label = QtWidgets.QLabel("Observer:")
         self.observer_selector = QtWidgets.QComboBox()
         self.observer_selector.addItems(["CIE 1931"])
@@ -14,6 +17,7 @@ class ObserverConversion(QtWidgets.QWidget):
         self.observer_step_size_selector.setCurrentText("10")
         observer_label_3 = QtWidgets.QLabel("nm steps")
 
+        # Output
         output_label = QtWidgets.QLabel("Output:")
         self.output_selector = QtWidgets.QComboBox()
         self.output_selector.addItems(["sRGB", "XYZ"])
@@ -29,11 +33,19 @@ class ObserverConversion(QtWidgets.QWidget):
         layout.setColumnStretch(layout.columnCount(), 1)
         self.setLayout(layout)
 
-    def get_output(self):
-        return self.output_selector.currentText()
-
     def get_observer(self):
         return self.observer_selector.currentText()
 
     def get_step_size(self):
         return int(self.observer_step_size_selector.currentText())
+
+    def process(self, spectral_image):
+
+        step_size = self.get_step_size()
+        output_space = self.output_selector.currentText()
+        if output_space == "XYZ":
+            image = spectral_to_XYZ_using_cie_observer(spectral_image, step_size)
+        elif output_space == "sRGB":
+            image = spectral_to_RGB_using_cie_observer(spectral_image, step_size)
+
+        return image

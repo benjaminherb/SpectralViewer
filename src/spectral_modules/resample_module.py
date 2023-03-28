@@ -39,7 +39,6 @@ class SpectralResampleModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
-        print("Resampling")
         output_bands = self.output_band_count.value()
 
         wavelengths = np.linspace(
