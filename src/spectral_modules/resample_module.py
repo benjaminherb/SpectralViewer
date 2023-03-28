@@ -38,19 +38,14 @@ class SpectralResampleModule(QtWidgets.QWidget):
         self.layout.addWidget(self.delete_button)
         self.setLayout(self.layout)
 
-    def process(self, image):
+    def process(self, spectral_image):
+        print("Resampling")
         output_bands = self.output_band_count.value()
 
-        # Reshape the original array into a 2D array
-        height, width, depth = image.data.shape
-        resampled_wavelengths = np.linspace(
-            image.minimum_wavelength, image.maximum_wavelength, output_bands)
+        wavelengths = np.linspace(
+            spectral_image.minimum_wavelength, spectral_image.maximum_wavelength, output_bands)
 
-        # Create a 1D interpolation function for each row of the reshaped array
-        interpolation_function_array = scipy.interpolate.interp1d(
-            image.get_wavelengths(), image.data, kind=self.interpolation_selector.currentText(), axis=2)
+        spectral_image.data = spectral_image.interpolate_wavelengths(
+            wavelengths, interpolation_method=self.interpolation_selector.currentText())
 
-        # Use the interpolation function to interpolate to the new axis values
-        image.data = interpolation_function_array(resampled_wavelengths)
-
-        return image
+        return spectral_image

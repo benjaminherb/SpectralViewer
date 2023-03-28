@@ -3,7 +3,7 @@ import pandas as pd
 import scipy
 
 
-def load_illuminant(illuminant="CIE D65", min_wavelength=400, max_wavelength=700, step_size=1):
+def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):
     if illuminant == "CIE D65":
         filename = "CIE_std_illum_D65.csv"
     elif illuminant == "CIE D50":
@@ -15,14 +15,8 @@ def load_illuminant(illuminant="CIE D65", min_wavelength=400, max_wavelength=700
 
     data = pd.read_csv(f'./res/illuminants/{filename}', index_col=0, header=None)
 
-    # return data.loc[400:700].values, np.arange(min_wavelength, max_wavelength+1, 1)
-
-    values = int((max_wavelength - min_wavelength) / step_size) + 1
-
-    # interpolate values
-    wavelengths = np.linspace(min_wavelength, max_wavelength, values)
     interpolation_function = scipy.interpolate.interp1d(
-        data.index.values, data.values, axis=0, kind='linear')
+        data.index.values, data.values, axis=0, kind=interpolation_method)
     illuminant = interpolation_function(wavelengths)
 
-    return illuminant[:, 0] / 100, wavelengths
+    return illuminant[:, 0] / 100  # illuminants are scaled to 100 at 560nm

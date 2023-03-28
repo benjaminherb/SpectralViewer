@@ -14,8 +14,8 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         self.label_01 = QtWidgets.QLabel("Change illuminant from")
-        self.original_illuminant_selector = QtWidgets.QComboBox()
-        self.original_illuminant_selector.addItems(['CIE D65', 'CIE D50', 'CIE A'])
+        self.input_illuminant_selector = QtWidgets.QComboBox()
+        self.input_illuminant_selector.addItems(['CIE D65', 'CIE D50', 'CIE A'])
         self.label_02 = QtWidgets.QLabel("to")
         self.output_illuminant_selector = QtWidgets.QComboBox()
         self.output_illuminant_selector.addItems(['CIE D65', 'CIE D50', 'CIE A'])
@@ -26,7 +26,7 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QHBoxLayout()
         self.layout.addWidget(self.label_01)
-        self.layout.addWidget(self.original_illuminant_selector)
+        self.layout.addWidget(self.input_illuminant_selector)
         self.layout.addWidget(self.label_02)
         self.layout.addWidget(self.output_illuminant_selector)
 
@@ -37,19 +37,15 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
-        original_illuminant, wavelengths = load_illuminant(
-            self.original_illuminant_selector.currentText(),
-            spectral_image.minimum_wavelength,
-            spectral_image.maximum_wavelength,
-            step_size=10)
+        print("Changing Illuminant")
+        wavelengths = spectral_image.get_wavelengths()
 
-        output_illuminant, wavelengths = load_illuminant(
-            self.output_illuminant_selector.currentText(),
-            spectral_image.minimum_wavelength,
-            spectral_image.maximum_wavelength,
-            step_size=10)
+        input_illuminant = load_illuminant(
+            self.input_illuminant_selector.currentText(), wavelengths)
+        output_illuminant = load_illuminant(
+            self.output_illuminant_selector.currentText(), wavelengths)
 
-        spectral_image.data = spectral_image.data / original_illuminant
+        spectral_image.data = spectral_image.data / input_illuminant
         spectral_image.data = spectral_image.data * output_illuminant
 
         return spectral_image

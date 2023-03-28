@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 
 
 class SpectralImage:
@@ -28,3 +29,10 @@ class SpectralImage:
 
     def depth(self):
         return self.get_dimension(2)
+
+    def interpolate_wavelengths(self, wavelengths, interpolation_method='linear'):
+        interpolation_function_array = scipy.interpolate.interp1d(
+            self.get_wavelengths(), self.data, kind=interpolation_method, axis=2)
+        upsampled_spectral_image = interpolation_function_array(wavelengths)
+
+        return upsampled_spectral_image

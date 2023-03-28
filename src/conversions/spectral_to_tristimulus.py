@@ -14,10 +14,7 @@ def spectral_to_XYZ_using_cie_observer(spectral_image, step_size):
     observer, wavelengths = load_observer(
         spectral_image.minimum_wavelength, spectral_image.maximum_wavelength, step_size)
 
-    interpolation_function_array = scipy.interpolate.interp1d(
-        spectral_image.get_wavelengths(), spectral_image.data, kind='linear', axis=2)
-
-    upsampled_spectral_image = interpolation_function_array(wavelengths)
+    upsampled_spectral_image = spectral_image.interpolate_wavelengths(wavelengths, 'linear')
 
     X = np.dot(upsampled_spectral_image, observer[0, :])
     Y = np.dot(upsampled_spectral_image, observer[1, :])
