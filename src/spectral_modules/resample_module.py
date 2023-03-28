@@ -1,5 +1,4 @@
 from PyQt6 import QtWidgets, QtGui
-import scipy
 import numpy as np
 
 
