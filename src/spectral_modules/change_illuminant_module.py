@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets, QtGui
 import scipy
 import numpy as np
-from src.data_loader.load_illuminants import load_illuminant
+from src.data_loader.load_illuminants import load_illuminant, get_illuminant_names
 
 
 class ChangeIlluminantModule(QtWidgets.QWidget):
@@ -13,7 +13,7 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setAutoFillBackground(True)
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
-        illuminants = ['CIE D65', 'CIE D50', 'CIE A', 'CIE E', 'Eiko Halogen']
+        illuminants = get_illuminant_names()
         self.label_01 = QtWidgets.QLabel("Change illuminant from")
         self.input_illuminant_selector = QtWidgets.QComboBox()
         self.input_illuminant_selector.addItems(illuminants)

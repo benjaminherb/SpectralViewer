@@ -56,6 +56,10 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.load_image()
 
+        # Add hotkey for refresh
+        self.hotkey = QtGui.QShortcut(QtCore.Qt.Key.Key_R, self)
+        self.hotkey.activated.connect(self.load_image)
+
     def load_image(self):
 
         spectral_image = self.source_tab.get_image()

@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
-from src.data_loader.load_illuminants import load_illuminant
+from src.data_loader.load_illuminants import load_illuminant, get_illuminant_names
 
 
 class SaturationModule(QtWidgets.QWidget):
@@ -14,7 +14,9 @@ class SaturationModule(QtWidgets.QWidget):
 
         self.label_01 = QtWidgets.QLabel("Illuminant")
         self.illuminant_selector = QtWidgets.QComboBox()
-        self.illuminant_selector.addItems(['None', 'CIE D65'])
+        illuminants = ['None']
+        illuminants.extend(get_illuminant_names())
+        self.illuminant_selector.addItems(illuminants)
 
         self.label_02 = QtWidgets.QLabel("Saturation")
         self.saturation_slider = QtWidgets.QSlider()

@@ -1,6 +1,9 @@
-import numpy as np
 import pandas as pd
 import scipy
+
+
+def get_illuminant_names() -> list:
+    return ['CIE D65', 'CIE D50', 'CIE A', 'CIE E', 'Eiko Halogen']
 
 
 def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):

@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets, QtGui
 import numpy as np
-from src.data_loader.load_filters import load_filter
+from src.data_loader.load_filters import load_filter, get_filter_names
 
 
 class FilterModule(QtWidgets.QWidget):
@@ -14,15 +14,7 @@ class FilterModule(QtWidgets.QWidget):
 
         self.label_01 = QtWidgets.QLabel("Apply")
         self.filter_selector = QtWidgets.QComboBox()
-        self.filter_selector.addItems(
-            ["Rose Pink", "Lavender Tint", "Medium Bastard Amber", "Pale Yellow",
-             "Dark Salmon", "Pale Amber Gold", "Medium Yellow", "Straw Tint",
-             "Deep Straw", "Surprise Peach", "Fire", "Medium Amber", "Gold Amber",
-             "Dark Amber", "Scarlet", "Sunset Red", "Bright Red", "Medium Red",
-             "Plasa Red", "Light Pink", "Medium Pink", "Pink Carnation", "Dark Magenta",
-             "Rose Purple", "Light Lavender", "Paler Lavender", "Lavender", "Mist Blue",
-             "Pale Blue", "Sky Blue"])
-
+        self.filter_selector.addItems(get_filter_names())
         self.label_02 = QtWidgets.QLabel("filter")
 
         self.up_button = QtWidgets.QPushButton("Up")
