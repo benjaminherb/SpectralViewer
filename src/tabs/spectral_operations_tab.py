@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets
 from src.spectral_modules.resample_module import SpectralResampleModule
 from src.spectral_modules.change_illuminant_module import ChangeIlluminantModule
 from src.spectral_modules.filter_module import FilterModule
+from src.spectral_modules.saturation_module import SaturationModule
 
 
 class SpectralOperationsTab(QtWidgets.QWidget):
@@ -9,6 +10,7 @@ class SpectralOperationsTab(QtWidgets.QWidget):
     resample_operation_id = 0
     change_illuminant_operation_id = 1
     filter_operation_id = 2
+    saturation_operation_id = 3
 
     def __init__(self):
         super().__init__()
@@ -16,7 +18,7 @@ class SpectralOperationsTab(QtWidgets.QWidget):
 
         self.new_operation_selector = QtWidgets.QComboBox()
         self.new_operation_selector.addItems(
-            ["Resample image", "Change illuminant", "Apply color filter"])
+            ["Resample image", "Change illuminant", "Apply color filter", "Change saturation"])
         self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_operation_layout = QtWidgets.QHBoxLayout()
@@ -45,6 +47,9 @@ class SpectralOperationsTab(QtWidgets.QWidget):
 
         if selected_operation_id == self.filter_operation_id:
             new_widget = FilterModule()
+
+        if selected_operation_id == self.saturation_operation_id:
+            new_widget = SaturationModule()
 
         if not new_widget:
             return
