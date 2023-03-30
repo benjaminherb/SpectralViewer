@@ -7,6 +7,7 @@ from src.tabs.spectral_to_rgb_tab import SpectralToRGBTab
 from src.tabs.picker_tab import PickerTab
 from src.tabs.rgb_operations_tab import RGBOperationsTab
 from src.tabs.spectral_operations_tab import SpectralOperationsTab
+from src.tabs.spectrogram_tab import SpectrogramTab
 from src.gui.preview_image import PreviewImage
 
 log = logging.getLogger(__name__)
@@ -27,15 +28,17 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         # tabs
         self.source_tab = SourceTab()
+        self.picker_tab = PickerTab()
+        self.spectrogram_tab = SpectrogramTab()
         self.spectral_operations_tab = SpectralOperationsTab()
         self.spectral_to_rgb_tab = SpectralToRGBTab()
         self.rgb_operations_tab = RGBOperationsTab()
-        self.picker_tab = PickerTab()
 
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.tabBarClicked.connect(self.tab_bar_was_clicked)
         self.tabs.addTab(self.source_tab, "Source")
         self.tabs.addTab(self.picker_tab, "Pixel Picker")
+        self.tabs.addTab(self.spectrogram_tab, "Spectrogram")
         self.tabs.addTab(self.spectral_operations_tab, "Spectral Operations")
         self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
         self.tabs.addTab(self.rgb_operations_tab, "RGB Operations")
@@ -84,6 +87,12 @@ class SpectralViewer(QtWidgets.QMainWindow):
             processed_spectral_image = self.spectral_operations_tab.process(
                 copy.deepcopy(spectral_image))
             self.picker_tab.update_plot(spectral_image, processed_spectral_image)
+
+        if self.tabs.widget(index) == self.spectrogram_tab:
+            spectral_image = self.source_tab.get_image()
+            processed_spectral_image = self.spectral_operations_tab.process(
+                copy.deepcopy(spectral_image))
+            self.spectrogram_tab.plot(spectral_image, processed_spectral_image)
 
     def mouse_move_over_image(self, x, y):
         if self.picker_tab.isVisible():

@@ -50,7 +50,7 @@ class SaturationModule(QtWidgets.QWidget):
 
     def process(self, spectral_image):
         saturation = _map_value_to_saturation(self.saturation_slider.value())
-        log.info(f"Applying {saturation:.2f)} saturation "
+        log.info(f"Applying {saturation:.2f} saturation "
                  f"with illuminant {self.illuminant_selector.currentText()}")
 
         illuminant = None
