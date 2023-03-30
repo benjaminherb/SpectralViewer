@@ -1,6 +1,8 @@
 from PyQt6 import QtWidgets, QtGui
-import numpy as np
+import logging
 from src.data_loader.load_filters import load_filter, get_filter_names
+
+log = logging.getLogger(__name__)
 
 
 class FilterModule(QtWidgets.QWidget):
@@ -33,8 +35,10 @@ class FilterModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
-        filter = load_filter(self.filter_selector.currentText(), spectral_image.get_wavelengths())
+        log.info(f"Applying {self.filter_selector.currentText()} filter")
+        filter_data = load_filter(
+            self.filter_selector.currentText(), spectral_image.get_wavelengths())
 
-        spectral_image.data = spectral_image.data * filter
+        spectral_image.data = spectral_image.data * filter_data
 
         return spectral_image

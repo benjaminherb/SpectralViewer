@@ -1,5 +1,8 @@
 from PyQt6 import QtWidgets, QtGui
 from src.conversions.tristimulus import linear_to_sRGB, sRGB_to_linear
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class ChangeTransferCurveModule(QtWidgets.QWidget):
@@ -43,6 +46,8 @@ class ChangeTransferCurveModule(QtWidgets.QWidget):
     def process(self, image):
         input_curve = self.input_selector.currentText()
         output_curve = self.output_selector.currentText()
+
+        log.info(f"Changing transfer curve from {input_curve} to {output_curve}")
 
         if input_curve == output_curve:
             return image

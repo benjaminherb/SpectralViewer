@@ -1,6 +1,9 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
+import logging
 from src.conversions.spectral_to_tristimulus import spectral_to_RGB_using_cie_observer, \
     spectral_to_XYZ_using_cie_observer
+
+log = logging.getLogger(__name__)
 
 
 class ObserverConversionModule(QtWidgets.QWidget):
@@ -40,12 +43,10 @@ class ObserverConversionModule(QtWidgets.QWidget):
         return int(self.observer_step_size_selector.currentText())
 
     def process(self, spectral_image):
-
+        log.info(f"Converting from spectral to RGB using CIE observer")
         step_size = self.get_step_size()
         output_space = self.output_selector.currentText()
         if output_space == "XYZ":
-            image = spectral_to_XYZ_using_cie_observer(spectral_image, step_size)
+            return spectral_to_XYZ_using_cie_observer(spectral_image, step_size)
         elif output_space == "sRGB":
-            image = spectral_to_RGB_using_cie_observer(spectral_image, step_size)
-
-        return image
+            return spectral_to_RGB_using_cie_observer(spectral_image, step_size)

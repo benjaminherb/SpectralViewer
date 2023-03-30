@@ -1,7 +1,8 @@
 from PyQt6 import QtWidgets, QtGui
-import scipy
-import numpy as np
+import logging
 from src.data_loader.load_illuminants import load_illuminant, get_illuminant_names
+
+log = logging.getLogger(__name__)
 
 
 class ChangeIlluminantModule(QtWidgets.QWidget):
@@ -44,6 +45,9 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
             self.input_illuminant_selector.currentText(), wavelengths)
         output_illuminant = load_illuminant(
             self.output_illuminant_selector.currentText(), wavelengths)
+
+        log.info(f"Changing illuminant from {self.input_illuminant_selector.currentText()} "
+                 f"to {self.output_illuminant_selector.currentText()}")
 
         spectral_image.data = spectral_image.data / input_illuminant
         spectral_image.data = spectral_image.data * output_illuminant

@@ -1,5 +1,8 @@
 from PyQt6 import QtWidgets, QtGui
 import numpy as np
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class SpectralResampleModule(QtWidgets.QWidget):
@@ -40,6 +43,7 @@ class SpectralResampleModule(QtWidgets.QWidget):
 
     def process(self, spectral_image):
         output_bands = self.output_band_count.value()
+        log.info(f"Resampling image from {spectral_image.depth()} to {output_bands} bands")
 
         wavelengths = np.linspace(
             spectral_image.minimum_wavelength, spectral_image.maximum_wavelength, output_bands)

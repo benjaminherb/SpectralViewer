@@ -1,6 +1,9 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
+import logging
 from src.data_loader.load_illuminants import load_illuminant, get_illuminant_names
+
+log = logging.getLogger(__name__)
 
 
 class SaturationModule(QtWidgets.QWidget):
@@ -47,6 +50,9 @@ class SaturationModule(QtWidgets.QWidget):
 
     def process(self, spectral_image):
         saturation = _map_value_to_saturation(self.saturation_slider.value())
+        log.info(f"Applying {saturation:.2f)} saturation "
+                 f"with illuminant {self.illuminant_selector.currentText()}")
+
         illuminant = None
         if self.illuminant_selector.currentText() != "None":
             illuminant = load_illuminant(self.illuminant_selector.currentText(),

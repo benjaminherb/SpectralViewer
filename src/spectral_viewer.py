@@ -1,12 +1,15 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
 import copy
+import logging
 from src.tabs.source_tab import SourceTab
 from src.tabs.spectral_to_rgb_tab import SpectralToRGBTab
 from src.tabs.picker_tab import PickerTab
 from src.tabs.rgb_operations_tab import RGBOperationsTab
 from src.tabs.spectral_operations_tab import SpectralOperationsTab
 from src.gui.preview_image import PreviewImage
+
+log = logging.getLogger(__name__)
 
 
 class SpectralViewer(QtWidgets.QMainWindow):
@@ -61,7 +64,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.hotkey.activated.connect(self.load_image)
 
     def load_image(self):
-
+        log.info("Loading image")
         spectral_image = self.source_tab.get_image()
 
         # image processing

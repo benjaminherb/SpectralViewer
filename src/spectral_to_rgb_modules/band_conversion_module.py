@@ -1,5 +1,8 @@
 from PyQt6 import QtWidgets
+import logging
 from src.conversions.spectral_to_tristimulus import spectral_to_rgb_using_bands
+
+log = logging.getLogger(__name__)
 
 
 class BandConversionModule(QtWidgets.QWidget):
@@ -65,6 +68,7 @@ class BandConversionModule(QtWidgets.QWidget):
                 band.setValue(int(percentage * self.bandcount) * step + self.minimum_wavelength)
 
     def process(self, spectral_image):
+        log.info(f"Converting from spectral to RGB using {self.get_bands()} bands")
         # update values if the min/max wavelength or depth changed
         self.update_values(spectral_image)
         image = spectral_to_rgb_using_bands(spectral_image, self.get_bands())
