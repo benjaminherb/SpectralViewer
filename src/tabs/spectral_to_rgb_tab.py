@@ -1,8 +1,6 @@
 from PyQt6 import QtWidgets
 from src.spectral_to_rgb_modules.band_conversion_module import BandConversionModule
 from src.spectral_to_rgb_modules.observer_conversion_module import ObserverConversionModule
-from src.conversions.spectral_to_tristimulus import spectral_to_RGB_using_cie_observer, \
-    spectral_to_XYZ_using_cie_observer, spectral_to_rgb_using_bands
 
 
 class SpectralToRGBTab(QtWidgets.QWidget):

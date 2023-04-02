@@ -52,12 +52,12 @@ class BandConversionModule(QtWidgets.QWidget):
 
     def update_values(self, spectral_image):
         # updated internal variables and reset to default if something changed
-        if (self.minimum_wavelength != spectral_image.minimum_wavelength or
-                self.maximum_wavelength != spectral_image.maximum_wavelength or
+        if (self.minimum_wavelength != spectral_image.get_minimum_wavelength() or
+                self.maximum_wavelength != spectral_image.get_maximum_wavelength() or
                 self.bandcount != spectral_image.depth()):
 
-            self.minimum_wavelength = spectral_image.minimum_wavelength
-            self.maximum_wavelength = spectral_image.maximum_wavelength
+            self.minimum_wavelength = spectral_image.get_minimum_wavelength()
+            self.maximum_wavelength = spectral_image.get_maximum_wavelength()
             self.bandcount = spectral_image.depth()
 
             step = self.get_step()

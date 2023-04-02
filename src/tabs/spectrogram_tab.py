@@ -35,15 +35,7 @@ class SpectrogramTab(QtWidgets.QWidget):
         value_count = spectral_image.width() * spectral_image.height()
         spectrogram = spectral_image.data.sum(axis=(0, 1)) / value_count
         processed_spectrogram = processed_spectral_image.data.sum(axis=(0, 1)) / value_count
-        self.plot_widget.plot(
-            np.linspace(spectral_image.minimum_wavelength,
-                        spectral_image.maximum_wavelength,
-                        spectral_image.depth()),
-            spectrogram,
-            pen=self.pre_pen, name="Original")
-        self.plot_widget.plot(
-            np.linspace(processed_spectral_image.minimum_wavelength,
-                        processed_spectral_image.maximum_wavelength,
-                        processed_spectral_image.depth()),
-            processed_spectrogram,
-            pen=self.post_pen, name="Processed")
+        self.plot_widget.plot(spectral_image.get_wavelengths(),
+                              spectrogram, pen=self.pre_pen, name="Original")
+        self.plot_widget.plot(spectral_image.get_wavelengths(),
+                              processed_spectrogram, pen=self.post_pen, name="Processed")

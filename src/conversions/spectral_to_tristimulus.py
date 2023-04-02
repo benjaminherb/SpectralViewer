@@ -1,7 +1,6 @@
 import numpy as np
 from src.conversions.tristimulus import XYZ_to_RGB
 from src.data_loader.load_observer import load_observer
-import scipy
 
 
 def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):
@@ -11,14 +10,12 @@ def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):
 
 
 def spectral_to_XYZ_using_cie_observer(spectral_image, step_size):
-    observer, wavelengths = load_observer(
-        spectral_image.minimum_wavelength, spectral_image.maximum_wavelength, step_size)
+    observer, wavelengths = load_observer(step_size)
+    resampled_spectral_image = spectral_image.interpolate_wavelengths(wavelengths, 'linear')
 
-    upsampled_spectral_image = spectral_image.interpolate_wavelengths(wavelengths, 'linear')
-
-    X = np.dot(upsampled_spectral_image, observer[0, :])
-    Y = np.dot(upsampled_spectral_image, observer[1, :])
-    Z = np.dot(upsampled_spectral_image, observer[2, :])
+    X = np.dot(resampled_spectral_image, observer[:, 0])
+    Y = np.dot(resampled_spectral_image, observer[:, 1])
+    Z = np.dot(resampled_spectral_image, observer[:, 2])
     XYZ = np.stack((X, Y, Z), axis=2)
     return XYZ / XYZ.max()  # scale to 1
 

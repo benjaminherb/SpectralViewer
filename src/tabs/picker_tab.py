@@ -39,18 +39,14 @@ class PickerTab(QtWidgets.QWidget):
             self.plot_widget.getPlotItem().clear()
             spectral_pixel_values = spectral_image.data[y, x]
             processed_spectral_pixel_values = processed_spectral_image.data[y, x]
-            self.plot_widget.plot(
-                np.linspace(spectral_image.minimum_wavelength,
-                            spectral_image.maximum_wavelength,
-                            spectral_image.depth()),
-                spectral_pixel_values,
-                pen=self.pre_pen, name="Original")
-            self.plot_widget.plot(
-                np.linspace(processed_spectral_image.minimum_wavelength,
-                            processed_spectral_image.maximum_wavelength,
-                            processed_spectral_image.depth()),
-                processed_spectral_pixel_values,
-                pen=self.post_pen, name="Processed")
+            self.plot_widget.plot(spectral_image.get_wavelengths(),
+                                  spectral_pixel_values,
+                                  pen=self.pre_pen, name="Original")
+
+            self.plot_widget.plot(spectral_image.get_wavelengths(),
+                                  processed_spectral_pixel_values,
+                                  pen=self.post_pen, name="Processed")
+
             self.previous_pixel_position = pixel_position
 
     def update_plot(self, spectral_image, processed_spectral_image):

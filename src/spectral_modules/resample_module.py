@@ -46,9 +46,12 @@ class SpectralResampleModule(QtWidgets.QWidget):
         log.info(f"Resampling image from {spectral_image.depth()} to {output_bands} bands")
 
         wavelengths = np.linspace(
-            spectral_image.minimum_wavelength, spectral_image.maximum_wavelength, output_bands)
+            spectral_image.get_minimum_wavelength(),
+            spectral_image.get_maximum_wavelength(),
+            output_bands)
 
         spectral_image.data = spectral_image.interpolate_wavelengths(
             wavelengths, interpolation_method=self.interpolation_selector.currentText())
+        spectral_image.wavelengths = wavelengths
 
         return spectral_image

@@ -9,3 +9,4 @@ dependencies:
   - pip:
       - PyQt6
       - scipy
+      - spectralpy

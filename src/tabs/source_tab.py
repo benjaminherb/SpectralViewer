@@ -9,7 +9,6 @@ class SourceTab(QtWidgets.QWidget):
         super().__init__()
         layout = QtWidgets.QGridLayout()
         self.spectral_image = None
-        self.bands = None
 
         self.image_path_input = QtWidgets.QLineEdit()
         self.image_path_input.setText("./res/images/ARAD_1K_0098.mat")
@@ -43,21 +42,19 @@ class SourceTab(QtWidgets.QWidget):
 
     def _update_metadata(self):
         # Set some data in the table
-        self.metadata_table.setItem(0, 0,
-                                    QtWidgets.QTableWidgetItem(os.path.basename(self.get_path())))
+        self.metadata_table.setItem(
+            0, 0, QtWidgets.QTableWidgetItem(os.path.basename(self.get_path())))
         w, h, d = ('-', '-', '-')
         value_type, value_min, value_max = ("", "", "")
+        min_wavelength, max_wavelength = ("", "")
 
         if self.spectral_image is not None:
-            w, h, d = self.spectral_image.shape
-            value_type = self.spectral_image.dtype.name
-            value_min = self.spectral_image.min()
-            value_max = self.spectral_image.max()
-
-        max_wavelength, min_wavelength = ('-', '-')
-        if self.bands is not None:
-            min_wavelength = self.bands.min()
-            max_wavelength = self.bands.max()
+            w, h, d = self.spectral_image.data.shape
+            value_type = self.spectral_image.data.dtype.name
+            value_min = self.spectral_image.data.min()
+            value_max = self.spectral_image.data.max()
+            min_wavelength = self.spectral_image.get_minimum_wavelength()
+            max_wavelength = self.spectral_image.get_maximum_wavelength()
 
         self.metadata_table.setItem(1, 0, QtWidgets.QTableWidgetItem(f'{w} x {h}'))
         self.metadata_table.setItem(2, 0, QtWidgets.QTableWidgetItem(f'{d}'))
@@ -73,7 +70,7 @@ class SourceTab(QtWidgets.QWidget):
     def load_image(self):
         image_path = self.get_path()
         try:
-            self.spectral_image, self.bands = load_spectral_image(image_path)
+            self.spectral_image = load_spectral_image(image_path)
             self._update_metadata()
         except OSError as e:
             print(e)
@@ -81,6 +78,4 @@ class SourceTab(QtWidgets.QWidget):
 
     def get_image(self):
         self.load_image()
-        return SpectralImage(self.spectral_image,
-                             minimum_wavelength=self.bands.min(),
-                             maximum_wavelength=self.bands.max())
+        return self.spectral_image
