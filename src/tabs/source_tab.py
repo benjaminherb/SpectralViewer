@@ -54,7 +54,11 @@ class SourceTab(QtWidgets.QWidget):
             value_min = self.spectral_image.data.min()
             value_max = self.spectral_image.data.max()
             min_wavelength = self.spectral_image.get_minimum_wavelength()
+            if self.spectral_image.original_minimum_wavelength != min_wavelength:
+                min_wavelength = f"{min_wavelength} ({self.spectral_image.original_minimum_wavelength})"
             max_wavelength = self.spectral_image.get_maximum_wavelength()
+            if self.spectral_image.original_maximum_wavelength != max_wavelength:
+                max_wavelength = f"{max_wavelength} ({self.spectral_image.original_maximum_wavelength})"
 
         self.metadata_table.setItem(1, 0, QtWidgets.QTableWidgetItem(f'{w} x {h}'))
         self.metadata_table.setItem(2, 0, QtWidgets.QTableWidgetItem(f'{d}'))

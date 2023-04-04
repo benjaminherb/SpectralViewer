@@ -23,7 +23,7 @@ class SpectrogramTab(QtWidgets.QWidget):
         self.plot_widget.plotItem.setLabel(axis='left', text='Average Intensity [0,1]')
         self.plot_widget.plotItem.setLabel(axis='bottom', text='Wavelength', units="nm")
 
-        self.plot_widget.plot(np.arange(0, 31) * 10 + 400, np.zeros(31))
+        self.plot_widget.plot(np.arange(0, 31) * 10 + 400, np.zeros(31)) # default range 400-700
         self.plot_widget.setBackground("default")
 
         layout = QtWidgets.QVBoxLayout()
@@ -37,5 +37,5 @@ class SpectrogramTab(QtWidgets.QWidget):
         processed_spectrogram = processed_spectral_image.data.sum(axis=(0, 1)) / value_count
         self.plot_widget.plot(spectral_image.get_wavelengths(),
                               spectrogram, pen=self.pre_pen, name="Original")
-        self.plot_widget.plot(spectral_image.get_wavelengths(),
+        self.plot_widget.plot(processed_spectral_image.get_wavelengths(),
                               processed_spectrogram, pen=self.post_pen, name="Processed")

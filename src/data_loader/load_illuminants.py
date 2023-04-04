@@ -22,8 +22,10 @@ def load_illuminant(illuminant, wavelengths, interpolation_method='linear'):
 
     data = pd.read_csv(f'./res/illuminants/{filename}', index_col=0, header=None)
 
+    # pad with 1 to avoid changing the value when changing illuminants (or dividing by zero)
     interpolation_function = scipy.interpolate.interp1d(
-        data.index.values, data.values, axis=0, kind=interpolation_method)
+        data.index.values, data.values, axis=0,
+        kind=interpolation_method, fill_value=1, bounds_error=False)
     illuminant = interpolation_function(wavelengths)
 
     # cie illuminants are usually scaled to 100 at 560nm

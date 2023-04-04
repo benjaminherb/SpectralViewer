@@ -47,4 +47,4 @@ def _load_specim(path):
         np.subtract(data, dark),
         np.subtract(white, dark))
 
-    return SpectralImage(corrected, data_ref.bands.centers)
+    return SpectralImage(corrected, np.array(data_ref.bands.centers))

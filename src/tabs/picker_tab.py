@@ -43,7 +43,7 @@ class PickerTab(QtWidgets.QWidget):
                                   spectral_pixel_values,
                                   pen=self.pre_pen, name="Original")
 
-            self.plot_widget.plot(spectral_image.get_wavelengths(),
+            self.plot_widget.plot(processed_spectral_image.get_wavelengths(),
                                   processed_spectral_pixel_values,
                                   pen=self.post_pen, name="Processed")
 

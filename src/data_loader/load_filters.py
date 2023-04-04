@@ -17,7 +17,8 @@ def load_filter(filtername, wavelengths, interpolation_method='linear'):
 
     filter_data = data[filtername]
     interpolation_function = scipy.interpolate.interp1d(
-        filter_data.index.values, filter_data.values, axis=0, kind=interpolation_method)
+        filter_data.index.values, filter_data.values, axis=0,
+        kind=interpolation_method, fill_value=0, bounds_error=False)
     filter_data = interpolation_function(wavelengths)
 
     return filter_data

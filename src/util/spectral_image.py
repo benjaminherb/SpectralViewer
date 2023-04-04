@@ -1,13 +1,20 @@
 import scipy
-import numpy as np
 
 
 class SpectralImage:
     def __init__(self, data, wavelengths):
-        print(type(data))
-        print(type(wavelengths))
-        self.data = np.array(data)
-        self.wavelengths = np.array(wavelengths)
+        # limit values to the visible spectrum (based on 1931 2° Observer)
+        self.original_minimum_wavelength = wavelengths.min()
+        self.original_maximum_wavelength = wavelengths.max()
+
+        minimum_visible_value = wavelengths.searchsorted(360) - 1
+        maximum_visible_value = wavelengths.searchsorted(830)
+        if minimum_visible_value == -1:
+            minimum_visible_value = 0
+
+        self.data = data[:, :, minimum_visible_value:maximum_visible_value]
+        self.data = self.data / self.data.max() # scale to 0-1
+        self.wavelengths = wavelengths[minimum_visible_value:maximum_visible_value]
 
     def get_wavelengths(self):
         return self.wavelengths
@@ -40,4 +47,3 @@ class SpectralImage:
             fill_value=0, bounds_error=False)
 
         return interpolation_function(wavelengths)
-
