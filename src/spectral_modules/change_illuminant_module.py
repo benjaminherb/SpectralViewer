@@ -15,10 +15,12 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         illuminants = get_illuminant_names()
-        self.label_01 = QtWidgets.QLabel("Change illuminant from")
+
+        self.label_header = QtWidgets.QLabel("Change Illuminant")
+        self.label_input = QtWidgets.QLabel("Input: ")
         self.input_illuminant_selector = QtWidgets.QComboBox()
         self.input_illuminant_selector.addItems(illuminants)
-        self.label_02 = QtWidgets.QLabel("to")
+        self.label_output = QtWidgets.QLabel("Output: ")
         self.output_illuminant_selector = QtWidgets.QComboBox()
         self.output_illuminant_selector.addItems(illuminants)
 
@@ -26,16 +28,24 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.down_button = QtWidgets.QPushButton("Down")
         self.delete_button = QtWidgets.QPushButton("Delete")
 
-        self.layout = QtWidgets.QHBoxLayout()
-        self.layout.addWidget(self.label_01)
-        self.layout.addWidget(self.input_illuminant_selector)
-        self.layout.addWidget(self.label_02)
-        self.layout.addWidget(self.output_illuminant_selector)
+        self.header_layout = QtWidgets.QHBoxLayout()
+        self.header_layout.addWidget(self.label_header)
+        self.header_layout.addStretch()
+        self.header_layout.addWidget(self.up_button)
+        self.header_layout.addWidget(self.down_button)
+        self.header_layout.addWidget(self.delete_button)
 
-        self.layout.addStretch()
-        self.layout.addWidget(self.up_button)
-        self.layout.addWidget(self.down_button)
-        self.layout.addWidget(self.delete_button)
+        self.input_output_layout = QtWidgets.QGridLayout()
+        self.input_output_layout.addWidget(self.label_input, 0, 0)
+        self.input_output_layout.addWidget(self.input_illuminant_selector, 0, 1)
+        self.input_output_layout.addWidget(self.label_output, 1, 0)
+        self.input_output_layout.addWidget(self.output_illuminant_selector, 1, 1)
+        self.input_output_layout.setColumnStretch(self.input_output_layout.columnCount(), 1)
+
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.addLayout(self.header_layout)
+        self.layout.addLayout(self.input_output_layout)
+
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
