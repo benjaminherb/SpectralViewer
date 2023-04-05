@@ -1,13 +1,14 @@
 import pandas as pd
+import numpy as np
 import scipy
 
 
 def get_illuminants():
     return {
-        'CIE D65': {'file': 'CIE_std_illum_D65.csv', 'name': ""},
-        'CIE D50': {'file': 'CIE_std_illum_D50.csv', 'name': ""},
-        'CIE A': {'file': 'CIE_std_illum_A_1nm.csv', 'name': ""},
-        'CIE E': {'file': 'CIE_std_illum_E.csv', 'name': ""},
+        'CIE Illuminant D65': {'file': 'CIE_std_illum_D65.csv', 'name': ""},
+        'CIE Illuminant D50': {'file': 'CIE_std_illum_D50.csv', 'name': ""},
+        'CIE Illuminant A': {'file': 'CIE_std_illum_A_1nm.csv', 'name': ""},
+        'CIE Illuminant E': {'file': 'CIE_std_illum_E.csv', 'name': ""},
         'Arri Compact 125W HMI': {'file': 'Arri_HMI_normalized_v2.csv',
                                   'name': 'Arri_Compact125W_HMI_Flood'},
         'Arri D5 1200W HMI': {'file': 'Arri_HMI_normalized_v2.csv',
@@ -44,7 +45,7 @@ def get_illuminant_names():
     return list(get_illuminants().keys())
 
 
-def load_illuminant(illuminant_name, wavelengths, interpolation_method='linear'):
+def load_illuminant(illuminant_name, wavelengths=None, interpolation_method='linear'):
     illuminant = get_illuminants()[illuminant_name]
 
     if not illuminant['name']:  # simple csv with only one illuminant
@@ -53,6 +54,9 @@ def load_illuminant(illuminant_name, wavelengths, interpolation_method='linear')
         data = pd.read_csv(f'./res/illuminants/{illuminant["file"]}',
                            index_col=0, header=0, delimiter=";").loc[illuminant['name']]
         data.index = data.index.astype(int)
+
+    if wavelengths is None:
+        return np.array(data).flatten()
 
     # pad with 1 to avoid changing the value when changing illuminants (or dividing by zero)
     interpolation_function = scipy.interpolate.interp1d(

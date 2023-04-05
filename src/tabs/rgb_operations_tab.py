@@ -1,17 +1,20 @@
 from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
+from src.rgb_modules.chromatic_adaptation_module import ChromaticAdaptationModule
+
 import numpy as np
 
 
 class RGBOperationsTab(QtWidgets.QWidget):
     change_transfer_operation_id = 0
+    chromatic_adaptation_operation_id = 1
 
     def __init__(self):
         super().__init__()
         self.operations = []
 
         self.new_operation_selector = QtWidgets.QComboBox()
-        self.new_operation_selector.addItem("Change transfer curve")
+        self.new_operation_selector.addItems(["Change transfer curve", "Chromatic Adaptation"])
         self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_operation_layout = QtWidgets.QHBoxLayout()
@@ -37,6 +40,9 @@ class RGBOperationsTab(QtWidgets.QWidget):
         new_widget = None
         if selected_operation_id == self.change_transfer_operation_id:
             new_widget = ChangeTransferCurveModule()
+
+        if selected_operation_id == self.chromatic_adaptation_operation_id:
+            new_widget = ChromaticAdaptationModule()
 
         if not new_widget:
             return
