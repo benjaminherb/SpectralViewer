@@ -10,3 +10,4 @@ dependencies:
       - PyQt6
       - scipy
       - spectralpy
+      - colour-science

@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
 from datetime import datetime
 import numpy as np
+import colour
 
 
 class AnalyzeTab(QtWidgets.QWidget):
@@ -72,11 +73,13 @@ class AnalyzeTab(QtWidgets.QWidget):
         if image == "S2":
             self.parent.display_image(self.snapshot_02)
         if image == "Diff":
-            self._calculate_difference()
-            self.parent.display_image(self.difference)
+            if self.snapshot_01 is not None and self.snapshot_02 is not None:
+                self._calculate_difference()
+                self.parent.display_image(self.difference)
 
     def _calculate_difference(self):
         if self.snapshot_01 is not None and self.snapshot_02 is not None:
             self.difference = np.absolute(self.snapshot_01 - self.snapshot_02)
-            self.difference_text.setText(f"{np.mean(self.difference):.5f}")
-
+            delta_e = np.mean(colour.delta_E(self.snapshot_01, self.snapshot_02,
+                              method='CIE 2000'))
+            self.difference_text.setText(f"∅ΔE: {delta_e:.5f}")
