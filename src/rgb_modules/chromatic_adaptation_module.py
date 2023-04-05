@@ -16,10 +16,10 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.setAutoFillBackground(True)
         self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
-        self.convert_label = QtWidgets.QLabel("Convert")
+        self.input_label = QtWidgets.QLabel("Input Illuminant:")
         self.input_selector = QtWidgets.QComboBox()
         self.input_selector.addItems(get_illuminant_names())
-        self.to_label = QtWidgets.QLabel("to")
+        self.output_label = QtWidgets.QLabel("Output Illuminant:")
         self.output_selector = QtWidgets.QComboBox()
         self.output_selector.addItems(get_illuminant_names())
 
@@ -27,15 +27,15 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.down_button = QtWidgets.QPushButton("Down")
         self.delete_button = QtWidgets.QPushButton("Delete")
 
-        self.layout = QtWidgets.QHBoxLayout()
-        self.layout.addWidget(self.convert_label)
-        self.layout.addWidget(self.input_selector)
-        self.layout.addWidget(self.to_label)
-        self.layout.addWidget(self.output_selector)
-        self.layout.addStretch()
-        self.layout.addWidget(self.up_button)
-        self.layout.addWidget(self.down_button)
-        self.layout.addWidget(self.delete_button)
+        self.layout = QtWidgets.QGridLayout()
+        self.layout.addWidget(self.input_label, 0, 0)
+        self.layout.addWidget(self.input_selector, 0, 1)
+        self.layout.addWidget(self.output_label, 1, 0)
+        self.layout.addWidget(self.output_selector, 1, 1)
+        self.layout.setColumnStretch(2, 2)
+        self.layout.addWidget(self.up_button, 0, 3)
+        self.layout.addWidget(self.down_button, 0, 4)
+        self.layout.addWidget(self.delete_button, 0, 5)
         self.setLayout(self.layout)
 
     def process(self, image):

@@ -8,6 +8,7 @@ from src.tabs.picker_tab import PickerTab
 from src.tabs.rgb_operations_tab import RGBOperationsTab
 from src.tabs.spectral_operations_tab import SpectralOperationsTab
 from src.tabs.spectrogram_tab import SpectrogramTab
+from src.tabs.analyze_tab import AnalyzeTab
 from src.gui.preview_image import PreviewImage
 
 log = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.spectral_operations_tab = SpectralOperationsTab()
         self.spectral_to_rgb_tab = SpectralToRGBTab()
         self.rgb_operations_tab = RGBOperationsTab()
+        self.analyze_tab = AnalyzeTab(self)
 
         self.tabs = QtWidgets.QTabWidget()
         self.tabs.tabBarClicked.connect(self.tab_bar_was_clicked)
@@ -42,10 +44,10 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.tabs.addTab(self.spectral_operations_tab, "Spectral Operations")
         self.tabs.addTab(self.spectral_to_rgb_tab, "Spectral to RGB")
         self.tabs.addTab(self.rgb_operations_tab, "RGB Operations")
-        self.tabs.addTab(QtWidgets.QWidget(), "Export")
+        self.tabs.addTab(self.analyze_tab, "Analyze")
 
         self.refresh_button = QtWidgets.QPushButton("Refresh")
-        self.refresh_button.pressed.connect(self.load_image)
+        self.refresh_button.pressed.connect(self.show_preview_image)
 
         self.control_layout = QtWidgets.QGridLayout()
         self.control_layout.addWidget(self.tabs)
@@ -60,11 +62,11 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.main_layout.addWidget(self.control_widget)
         self.main_widget.setLayout(self.main_layout)
         self.setCentralWidget(self.main_widget)
-        self.load_image()
+        self.show_preview_image()
 
         # Add hotkey for refresh
         self.hotkey = QtGui.QShortcut(QtCore.Qt.Key.Key_R, self)
-        self.hotkey.activated.connect(self.load_image)
+        self.hotkey.activated.connect(self.show_preview_image)
 
     def load_image(self):
         log.info("Loading image")
@@ -75,11 +77,19 @@ class SpectralViewer(QtWidgets.QMainWindow):
         image = self.spectral_to_rgb_tab.process(spectral_image)
         image = self.rgb_operations_tab.process(image)
 
+        return image
+
+    def display_image(self, image):
         # display image
         h, w, d = image.shape
+        image = (image * 255).astype(np.uint8)
         q_image = QtGui.QImage(image.data.tobytes(), w, h, d * w,
                                QtGui.QImage.Format.Format_RGB888)
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
+
+    def show_preview_image(self):
+        image = self.load_image()
+        self.display_image(image)
 
     def tab_bar_was_clicked(self, index):
         if self.tabs.widget(index) == self.picker_tab:

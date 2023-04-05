@@ -1,7 +1,6 @@
 import os
-from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6 import QtWidgets
 from src.data_loader.load_image import load_spectral_image
-from src.util.spectral_image import SpectralImage
 
 
 class SourceTab(QtWidgets.QWidget):

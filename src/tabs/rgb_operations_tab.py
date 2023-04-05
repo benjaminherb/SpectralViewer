@@ -84,6 +84,4 @@ class RGBOperationsTab(QtWidgets.QWidget):
                 continue
             image = operation.process(image)
 
-        image = (image * 255).astype(np.uint8)
-
         return image

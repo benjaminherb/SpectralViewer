@@ -17,9 +17,11 @@ class ScaleOrClipModule(QtWidgets.QWidget):
         self.minimum_label = QtWidgets.QLabel("Minimum Values:")
         self.minimum_selector = QtWidgets.QComboBox()
         self.minimum_selector.addItems(['None', 'Clip', 'Offset'])
+        self.minimum_selector.setCurrentText('Clip')
         self.maximum_label = QtWidgets.QLabel("Maximum Values:")
         self.maximum_selector = QtWidgets.QComboBox()
         self.maximum_selector.addItems(['None', 'Clip', 'Scale to 1'])
+        self.maximum_selector.setCurrentText('Scale to 1')
 
         self.up_button = QtWidgets.QPushButton("Up")
         self.down_button = QtWidgets.QPushButton("Down")
