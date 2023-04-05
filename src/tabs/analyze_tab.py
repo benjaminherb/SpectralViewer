@@ -80,10 +80,4 @@ class AnalyzeTab(QtWidgets.QWidget):
     def _calculate_difference(self):
         if self.snapshot_01 is not None and self.snapshot_02 is not None:
             self.difference = np.absolute(self.snapshot_01 - self.snapshot_02)
-            delta_e = np.mean(colour.delta_E(
-                colour.XYZ_to_Jzazbz(
-                    colour.sRGB_to_XYZ(self.snapshot_01, apply_cctf_decoding=True)),
-                colour.XYZ_to_Jzazbz(
-                    colour.sRGB_to_XYZ(self.snapshot_02, apply_cctf_decoding=True)),
-                method='CIE 2000'))
-            self.difference_text.setText(f"∅ΔE: {delta_e:.5f}")
+            self.difference_text.setText(f"{np.mean(self.difference):.8f}")

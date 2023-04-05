@@ -1,7 +1,9 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
+import numpy as np
 import logging
 from src.data_loader.load_camera import get_camera_names
 from src.conversions.spectral_to_tristimulus import spectral_to_RGB_using_camera_response
+from src.conversions.matrices import get_camera_characterisation_matrix
 
 log = logging.getLogger(__name__)
 
@@ -24,4 +26,6 @@ class CameraConversionModule(QtWidgets.QWidget):
     def process(self, spectral_image):
         image = spectral_to_RGB_using_camera_response(
             spectral_image, self.camera_selector.currentText(), 10)
+        matrix = get_camera_characterisation_matrix(self.camera_selector.currentText())
+        image = np.dot(image, matrix)
         return image

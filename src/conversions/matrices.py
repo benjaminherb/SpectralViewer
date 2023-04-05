@@ -1,4 +1,9 @@
 import numpy as np
+from src.data_loader.load_reflectances import load_reflectances
+from src.data_loader.load_illuminants import load_illuminant
+from src.data_loader.load_camera import load_camera
+from src.data_loader.load_observer import load_observer
+from src.data_loader.load_primaries import load_primaries
 
 
 def get_RGB_to_XYZ_matrix(primaries):
@@ -29,3 +34,22 @@ def xy_to_XYZ(x, y, Y):
     X = x * Y / y
     Z = (1 - x - y) * Y / y
     return X, Y, Z
+
+
+def get_camera_characterisation_matrix(camera_name):
+    camera, wavelengths = load_camera(camera_name, step_size=1)
+    observer, observer_wavelengths = load_observer(step_size=1)
+
+    reflectances = load_reflectances("Macbeth ColorChecker", wavelengths)
+    illuminant = load_illuminant("CIE Illuminant D65", wavelengths)
+    radiance = reflectances * illuminant.reshape(-1, 1)
+    RGB_camera = (radiance[:, :, np.newaxis] * camera[:, np.newaxis, :]).sum(axis=0) / len(
+        wavelengths)
+    XYZ_observer = (radiance[:, :, np.newaxis] * observer[:, np.newaxis, :]).sum(axis=0) / len(
+        wavelengths)
+    primaries = load_primaries("sRGB")
+    XYZ_to_RGB_matrix = get_XYZ_to_RGB_matrix(primaries)
+    RGB_observer = np.dot(XYZ_observer, XYZ_to_RGB_matrix.T)
+    # pseudo inverse
+    matrix = np.linalg.lstsq(RGB_camera, RGB_observer, rcond=None)[0]
+    return matrix
