@@ -49,7 +49,5 @@ class ScaleOrClipModule(QtWidgets.QWidget):
             image = image / image.max()
         elif self.maximum_selector.currentText() == "Clip":
             image = np.clip(image, a_min=None, a_max=1)
-        print(image.min())
-        print(image.max())
 
         return image

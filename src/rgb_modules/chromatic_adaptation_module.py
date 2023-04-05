@@ -22,6 +22,9 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.output_label = QtWidgets.QLabel("Output Illuminant:")
         self.output_selector = QtWidgets.QComboBox()
         self.output_selector.addItems(get_illuminant_names())
+        self.method_label = QtWidgets.QLabel("Method")
+        self.method_selector = QtWidgets.QComboBox()
+        self.method_selector.addItems(["Bradford", "Von Kries", "XYZ"])
 
         self.up_button = QtWidgets.QPushButton("Up")
         self.down_button = QtWidgets.QPushButton("Down")
@@ -32,6 +35,8 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.layout.addWidget(self.input_selector, 0, 1)
         self.layout.addWidget(self.output_label, 1, 0)
         self.layout.addWidget(self.output_selector, 1, 1)
+        self.layout.addWidget(self.method_label, 2, 0)
+        self.layout.addWidget(self.method_selector, 2, 1)
         self.layout.setColumnStretch(2, 2)
         self.layout.addWidget(self.up_button, 0, 3)
         self.layout.addWidget(self.down_button, 0, 4)

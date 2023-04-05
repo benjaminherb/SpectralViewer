@@ -29,7 +29,8 @@ def sRGB_to_linear(v):
             + (v <= 0.04045) * (v / 12.92))
 
 
-def chromatic_adaptation(image, source_illuminant_name, destination_illuminant_name):
+def chromatic_adaptation(image, source_illuminant_name,
+                         destination_illuminant_name, method="Bradford"):
     # based on http://brucelindbloom.com/index.html?Eqn_ChromAdapt.html
     observer, wavelengths = load_observer(step_size=1)
     source_illuminant = load_illuminant(source_illuminant_name, wavelengths)
@@ -39,7 +40,7 @@ def chromatic_adaptation(image, source_illuminant_name, destination_illuminant_n
     source_xyz = source_xyz / source_xyz[1]  # scale to Y == 1
     destination_xyz = np.sum(observer * destination_illuminant[:, np.newaxis], axis=0)
     destination_xyz = destination_xyz / destination_xyz[1]
-    domain_matrix = get_cone_response_domain_matrices("Bradford")
+    domain_matrix = get_cone_response_domain_matrices(method)
     inverse_domain_matrix = np.linalg.inv(domain_matrix)
 
     source_domain_vector = np.dot(domain_matrix, source_xyz)
@@ -50,7 +51,7 @@ def chromatic_adaptation(image, source_illuminant_name, destination_illuminant_n
         np.dot(inverse_domain_matrix,
                np.array([[vector[0], 0, 0], [0, vector[1], 0], [0, 0, vector[2]]])),
         domain_matrix)
-    print(f"ChromAdapt: {matrix}")
+
     return np.dot(image, matrix)
 
 
