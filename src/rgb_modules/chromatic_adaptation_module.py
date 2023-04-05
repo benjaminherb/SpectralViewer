@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets, QtGui
 import logging
 from src.data_loader.load_illuminants import get_illuminant_names
 from src.conversions.tristimulus import chromatic_adaptation
+from src.conversions.tristimulus import XYZ_to_RGB, RGB_to_XYZ
 
 log = logging.getLogger(__name__)
 
@@ -38,8 +39,8 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, image):
-        image = chromatic_adaptation(
-            image, self.input_selector.currentText(), self.output_selector.currentText())
-        print(image.min())
-
-        return image
+        XYZ_image = RGB_to_XYZ(image)
+        XYZ_image = chromatic_adaptation(
+            XYZ_image, self.input_selector.currentText(), self.output_selector.currentText())
+        RGB_image = XYZ_to_RGB(XYZ_image)
+        return RGB_image

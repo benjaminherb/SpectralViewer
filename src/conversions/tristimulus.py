@@ -1,5 +1,5 @@
 import numpy as np
-from src.conversions.matrices import get_XYZ_to_RGB_matrix
+from src.conversions.matrices import get_XYZ_to_RGB_matrix, get_RGB_to_XYZ_matrix
 from src.data_loader.load_primaries import load_primaries
 from src.data_loader.load_illuminants import get_illuminants, load_illuminant
 from src.data_loader.load_observer import load_observer
@@ -10,6 +10,13 @@ def XYZ_to_RGB(XYZ_image):
     XYZ_to_RGB_matrix = get_XYZ_to_RGB_matrix(primaries)
     RGB_image = np.dot(XYZ_image, XYZ_to_RGB_matrix.T)
     return RGB_image
+
+
+def RGB_to_XYZ(RGB_image):
+    primaries = load_primaries("sRGB")
+    RGB_to_XYZ_matrix = get_RGB_to_XYZ_matrix(primaries)
+    XYZ_image = np.dot(RGB_image, RGB_to_XYZ_matrix.T)
+    return XYZ_image
 
 
 def linear_to_sRGB(v):
@@ -43,7 +50,7 @@ def chromatic_adaptation(image, source_illuminant_name, destination_illuminant_n
         np.dot(inverse_domain_matrix,
                np.array([[vector[0], 0, 0], [0, vector[1], 0], [0, 0, vector[2]]])),
         domain_matrix)
-
+    print(f"ChromAdapt: {matrix}")
     return np.dot(image, matrix)
 
 

@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
 from src.rgb_modules.chromatic_adaptation_module import ChromaticAdaptationModule
+from src.rgb_modules.scale_or_clip_module import ScaleOrClipModule
 
 import numpy as np
 
@@ -8,13 +9,15 @@ import numpy as np
 class RGBOperationsTab(QtWidgets.QWidget):
     change_transfer_operation_id = 0
     chromatic_adaptation_operation_id = 1
+    scale_or_clip_operation_id = 2
 
     def __init__(self):
         super().__init__()
         self.operations = []
 
         self.new_operation_selector = QtWidgets.QComboBox()
-        self.new_operation_selector.addItems(["Change transfer curve", "Chromatic Adaptation"])
+        self.new_operation_selector.addItems(
+            ["Change transfer curve", "Chromatic Adaptation", "Scale or Clip"])
         self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_operation_layout = QtWidgets.QHBoxLayout()
@@ -31,6 +34,7 @@ class RGBOperationsTab(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
         # default operations
+        self._add_operation(self.scale_or_clip_operation_id)
         self._add_operation(self.change_transfer_operation_id)
 
     def _add_operation(self, selected_operation_id=None):
@@ -43,6 +47,9 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
         if selected_operation_id == self.chromatic_adaptation_operation_id:
             new_widget = ChromaticAdaptationModule()
+
+        if selected_operation_id == self.scale_or_clip_operation_id:
+            new_widget = ScaleOrClipModule()
 
         if not new_widget:
             return
@@ -71,17 +78,12 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
     def process(self, image):
 
-        # avoid negative values
-        image = image.clip(min=0)
-
         for index in range(self.operations_layout.count()):
             operation = self.operations_layout.itemAt(index).widget()
             if not operation:
                 continue
             image = operation.process(image)
 
-        # scale to valid range
-        image = ((image / image.max()) * 255).astype(np.uint8)
-        # image = np.clip(image, a_max=255, a_min=0)
+        image = (image * 255).astype(np.uint8)
 
         return image
