@@ -25,7 +25,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         # control panel
         self.control_widget = QtWidgets.QWidget()
-        self.control_widget.setMinimumWidth(800)
+        self.control_widget.setMinimumWidth(900)
 
         # tabs
         self.source_tab = SourceTab()

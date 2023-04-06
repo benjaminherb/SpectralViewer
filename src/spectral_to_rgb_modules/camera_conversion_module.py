@@ -19,6 +19,7 @@ class CameraConversionModule(QtWidgets.QWidget):
         self.camera_selector.addItems(get_camera_names())
         self.characterisation_label = QtWidgets.QLabel("Characterization Matrix:")
         self.characterisation_checkbox = QtWidgets.QCheckBox("Apply")
+        self.characterisation_checkbox.clicked.connect(self._disable_matrix_options)
 
         self.reflectance_label = QtWidgets.QLabel("Reflectance Set:")
         self.reflectance_set_selector = QtWidgets.QComboBox()
@@ -46,6 +47,8 @@ class CameraConversionModule(QtWidgets.QWidget):
         layout.setColumnStretch(layout.columnCount(), 1)
         self.setLayout(layout)
 
+        self._disable_matrix_options()
+
     def process(self, spectral_image):
         image = spectral_to_RGB_using_camera_response(
             spectral_image, self.camera_selector.currentText(), 10)
@@ -58,3 +61,9 @@ class CameraConversionModule(QtWidgets.QWidget):
                 )
             image = np.dot(image, matrix)
         return image
+
+    def _disable_matrix_options(self):
+        self.reflectance_set_selector.setDisabled(not self.characterisation_checkbox.isChecked())
+        self.camera_illuminant_selector.setDisabled(not self.characterisation_checkbox.isChecked())
+        self.reference_illuminant_selector.setDisabled(not self.characterisation_checkbox.isChecked())
+

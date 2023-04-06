@@ -16,12 +16,12 @@ class SpectralToRGBTab(QtWidgets.QWidget):
 
         self.observer_conversion_module = ObserverConversionModule()
         self.observer_radio = QtWidgets.QRadioButton(
-            "Conversion using an Observer", self.radio_group)
+            "Conversion using an observer", self.radio_group)
         self.observer_radio.toggled.connect(self._update_radio_selection)
 
         self.camera_conversion_module = CameraConversionModule()
         self.camera_radio = QtWidgets.QRadioButton(
-            "Conversion using an Camera response", self.radio_group)
+            "Conversion using a camera response", self.radio_group)
         self.camera_radio.toggled.connect(self._update_radio_selection)
 
         self.observer_radio.toggle()  # default
