@@ -18,13 +18,12 @@ def spectral_to_XYZ_using_cie_observer(spectral_image, step_size):
     Y = np.dot(resampled_spectral_image, observer[:, 1])
     Z = np.dot(resampled_spectral_image, observer[:, 2])
     XYZ = np.stack((X, Y, Z), axis=2)
-    return XYZ / XYZ.max()  # scale to 1
+    return XYZ
 
 
 def spectral_to_RGB_using_cie_observer(spectral_image, step_size):
     XYZ_image = spectral_to_XYZ_using_cie_observer(spectral_image, step_size)
     RGB_image = XYZ_to_RGB(XYZ_image)
-
     return RGB_image
 
 

@@ -3,7 +3,7 @@ import scipy
 
 
 def load_reflectances(name, wavelengths, interpolation_method="linear"):
-    if not name == "Macbeth ColorChecker":
+    if not name == "Macbeth ColorChecker Classic":
         return
 
     data = pd.read_csv('./res/reflectances/macbeth_chart_reflectances.csv', index_col=0,
