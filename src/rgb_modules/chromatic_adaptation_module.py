@@ -44,8 +44,14 @@ class ChromaticAdaptationModule(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def process(self, image):
+        input = self.input_selector.currentText()
+        output = self.output_selector.currentText()
+        method = self.method_selector.currentText()
+
+        log.info(f"Chromatic adaptation from {input} to {output} using {method}")
+
         XYZ_image = RGB_to_XYZ(image)
-        XYZ_image = chromatic_adaptation(
-            XYZ_image, self.input_selector.currentText(), self.output_selector.currentText())
+        XYZ_image = chromatic_adaptation(XYZ_image, input, output, method)
         RGB_image = XYZ_to_RGB(XYZ_image)
+
         return RGB_image
