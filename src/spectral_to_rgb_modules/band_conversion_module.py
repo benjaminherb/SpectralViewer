@@ -20,6 +20,12 @@ class BandConversionModule(QtWidgets.QWidget):
         self.band2_label = QtWidgets.QLabel("Blue (nm):")
         self.band2 = self._get_single_selector(.2)
 
+        self.link_selector = QtWidgets.QCheckBox("Link Bands")
+        self.link_selector.setChecked(False)
+        self.band0.valueChanged.connect(self._check_linked)
+        self.band1.valueChanged.connect(self._check_linked)
+        self.band2.valueChanged.connect(self._check_linked)
+
         self.layout.addWidget(self.band0_label)
         self.layout.addWidget(self.band0)
         self.layout.addSpacing(10)
@@ -28,6 +34,8 @@ class BandConversionModule(QtWidgets.QWidget):
         self.layout.addSpacing(10)
         self.layout.addWidget(self.band2_label)
         self.layout.addWidget(self.band2)
+        self.layout.addSpacing(10)
+        self.layout.addWidget(self.link_selector)
         self.layout.addStretch()
 
         self.setLayout(self.layout)
@@ -46,6 +54,12 @@ class BandConversionModule(QtWidgets.QWidget):
         band.setSingleStep(step)
         band.setValue(int(percentage * self.bandcount) * step + self.minimum_wavelength)
         return band
+
+    def _check_linked(self, value):
+        if self.link_selector.isChecked():
+            self.band0.setValue(value)
+            self.band1.setValue(value)
+            self.band2.setValue(value)
 
     def get_step(self):
         return int((self.maximum_wavelength - self.minimum_wavelength) / (self.bandcount - 1))
