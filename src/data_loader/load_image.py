@@ -31,20 +31,18 @@ def _load_specim(path):
         os.path.join(directory, file + ".hdr"),
         os.path.join(directory, file + ".raw"))
 
-    white_ref = spectral.io.envi.open(
-        os.path.join(directory, "WHITEREF_" + file + ".hdr"),
-        os.path.join(directory, "WHITEREF_" + file + ".raw"))
+    # white_ref = spectral.io.envi.open(
+    #    os.path.join(directory, "WHITEREF_" + file + ".hdr"),
+    #    os.path.join(directory, "WHITEREF_" + file + ".raw"))
 
     dark_ref = spectral.io.envi.open(
         os.path.join(directory, "DARKREF_" + file + ".hdr"),
         os.path.join(directory, "DARKREF_" + file + ".raw"))
 
-    white = np.array(white_ref.load())
+    # white = np.array(white_ref.load())
     dark = np.array(dark_ref.load())
     data = np.array(data_ref.load())
 
-    corrected = np.divide(
-        np.subtract(data, dark),
-        np.subtract(white, dark))
+    corrected = np.subtract(data, dark)
 
     return SpectralImage(corrected, np.array(data_ref.bands.centers))
