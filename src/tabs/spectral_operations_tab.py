@@ -54,13 +54,34 @@ class SpectralOperationsTab(QtWidgets.QWidget):
         if not new_widget:
             return
 
-        new_widget.delete_button.pressed.connect(lambda: self._delete_operation(new_widget))
-        new_widget.up_button.pressed.connect(lambda: self._move_operation(new_widget, -1))
-        new_widget.down_button.pressed.connect(lambda: self._move_operation(new_widget, 1))
+        new_widget.navigation_clicked.connect(self.navigation_clicked)
 
         self.operations_layout.addWidget(new_widget)
         self.operations.append(new_widget)
         self.update()
+
+    def navigation_clicked(self, widget, action):
+
+        if action == "delete":
+            self.operations_layout.removeWidget(widget)
+            widget.setParent(None)
+            widget.deleteLater()
+            self.update()
+            return
+
+        current_index = self.operations_layout.indexOf(widget)
+        moved_index = current_index
+        if action == "up":
+            moved_index = current_index - 1
+        elif action == "down":
+            moved_index = current_index + 1
+        else:
+            return
+
+        if moved_index in range(0, self.operations_layout.count()):
+            upper_widget = self.operations_layout.itemAt(moved_index).widget()
+            self.operations_layout.insertWidget(moved_index, widget)
+            self.operations_layout.insertWidget(current_index, upper_widget)
 
     def _delete_operation(self, widget):
         self.operations_layout.removeWidget(widget)

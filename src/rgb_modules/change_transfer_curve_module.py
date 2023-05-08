@@ -1,11 +1,12 @@
 from PyQt6 import QtWidgets, QtGui
 from src.conversions.tristimulus import linear_to_sRGB, sRGB_to_linear
 import logging
+from src.util.abstract_module import AbstractModule
 
 log = logging.getLogger(__name__)
 
 
-class ChangeTransferCurveModule(QtWidgets.QWidget):
+class ChangeTransferCurveModule(AbstractModule):
     def __init__(self):
         super().__init__()
 
@@ -38,9 +39,7 @@ class ChangeTransferCurveModule(QtWidgets.QWidget):
         self.layout.addWidget(self.to_label)
         self.layout.addWidget(self.output_selector)
         self.layout.addStretch()
-        self.layout.addWidget(self.up_button)
-        self.layout.addWidget(self.down_button)
-        self.layout.addWidget(self.delete_button)
+        self.layout.addLayout(self.navigation_layout)
         self.setLayout(self.layout)
 
     def process(self, image):

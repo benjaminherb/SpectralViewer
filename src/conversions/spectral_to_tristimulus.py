@@ -13,11 +13,7 @@ def spectral_to_rgb_using_bands(spectral_image, bands=(20, 13, 3)):
 def spectral_to_XYZ_using_cie_observer(spectral_image, step_size):
     observer, wavelengths = load_observer(step_size)
     resampled_spectral_image = spectral_image.interpolate_wavelengths(wavelengths, 'linear')
-
-    X = np.dot(resampled_spectral_image, observer[:, 0])
-    Y = np.dot(resampled_spectral_image, observer[:, 1])
-    Z = np.dot(resampled_spectral_image, observer[:, 2])
-    XYZ = np.stack((X, Y, Z), axis=2)
+    XYZ = np.dot(resampled_spectral_image, observer)
     return XYZ
 
 

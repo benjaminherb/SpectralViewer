@@ -1,18 +1,16 @@
 from PyQt6 import QtWidgets, QtGui
 import logging
 import numpy as np
+from src.util.abstract_module import AbstractModule
 
 log = logging.getLogger(__name__)
 
 
-class ScaleOrClipModule(QtWidgets.QWidget):
+class ScaleOrClipModule(AbstractModule):
     def __init__(self):
         super().__init__()
 
         self.setToolTip("Scale or clip pixel values")
-
-        self.setAutoFillBackground(True)
-        self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         self.minimum_label = QtWidgets.QLabel("Minimum Values:")
         self.minimum_selector = QtWidgets.QComboBox()
@@ -33,10 +31,7 @@ class ScaleOrClipModule(QtWidgets.QWidget):
         self.layout.addWidget(self.maximum_label, 1, 0)
         self.layout.addWidget(self.maximum_selector, 1, 1)
         self.layout.setColumnStretch(2, 2)
-        self.layout.addWidget(self.up_button, 0, 3)
-        self.layout.addWidget(self.down_button, 0, 4)
-        self.layout.addWidget(self.delete_button, 0, 5)
-
+        self.layout.addLayout(self.navigation_layout, 0,3)
         self.setLayout(self.layout)
 
     def process(self, image):

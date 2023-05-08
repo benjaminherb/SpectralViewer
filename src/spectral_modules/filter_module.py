@@ -1,18 +1,16 @@
 from PyQt6 import QtWidgets, QtGui
 import logging
 from src.data_loader.load_filters import load_filter, get_filter_names
+from src.util.abstract_module import AbstractModule
 
 log = logging.getLogger(__name__)
 
 
-class FilterModule(QtWidgets.QWidget):
+class FilterModule(AbstractModule):
     def __init__(self):
         super().__init__()
 
         self.setToolTip("Apply color filters")
-
-        self.setAutoFillBackground(True)
-        self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         self.label_01 = QtWidgets.QLabel("Apply")
         self.filter_selector = QtWidgets.QComboBox()
@@ -29,9 +27,7 @@ class FilterModule(QtWidgets.QWidget):
         self.layout.addWidget(self.label_02)
 
         self.layout.addStretch()
-        self.layout.addWidget(self.up_button)
-        self.layout.addWidget(self.down_button)
-        self.layout.addWidget(self.delete_button)
+        self.layout.addLayout(self.navigation_layout)
         self.setLayout(self.layout)
 
     def process(self, spectral_image):

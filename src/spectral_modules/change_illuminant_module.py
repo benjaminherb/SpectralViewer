@@ -1,18 +1,16 @@
 from PyQt6 import QtWidgets, QtGui
 import logging
 from src.data_loader.load_illuminants import load_illuminant, get_illuminant_names
+from src.util.abstract_module import AbstractModule
 
 log = logging.getLogger(__name__)
 
 
-class ChangeIlluminantModule(QtWidgets.QWidget):
+class ChangeIlluminantModule(AbstractModule):
     def __init__(self):
         super().__init__()
 
         self.setToolTip("Change illuminant")
-
-        self.setAutoFillBackground(True)
-        self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         illuminants = get_illuminant_names()
 
@@ -33,9 +31,7 @@ class ChangeIlluminantModule(QtWidgets.QWidget):
         self.layout.addWidget(self.label_output, 1, 0)
         self.layout.addWidget(self.output_illuminant_selector, 1, 1)
         self.layout.setColumnStretch(2, 2)
-        self.layout.addWidget(self.up_button, 0, 3)
-        self.layout.addWidget(self.down_button, 0, 4)
-        self.layout.addWidget(self.delete_button, 0, 5)
+        self.layout.addLayout(self.navigation_layout, 0, 3)
 
         self.setLayout(self.layout)
 

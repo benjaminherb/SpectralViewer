@@ -1,18 +1,16 @@
-from PyQt6 import QtWidgets, QtGui
+from PyQt6 import QtWidgets
 import numpy as np
 import logging
+from src.util.abstract_module import AbstractModule
 
 log = logging.getLogger(__name__)
 
 
-class SpectralResampleModule(QtWidgets.QWidget):
+class SpectralResampleModule(AbstractModule):
     def __init__(self):
         super().__init__()
 
         self.setToolTip("Resample image to a lower spectral resolution using linear interpolation")
-
-        self.setAutoFillBackground(True)
-        self.setBackgroundRole(QtGui.QPalette.ColorRole.Window)
 
         self.label_01 = QtWidgets.QLabel("Resample image to ")
         self.output_band_count = QtWidgets.QSpinBox()
@@ -24,10 +22,6 @@ class SpectralResampleModule(QtWidgets.QWidget):
             ['linear', 'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous', 'next'])
         self.label_03 = QtWidgets.QLabel("interpolation")
 
-        self.up_button = QtWidgets.QPushButton("Up")
-        self.down_button = QtWidgets.QPushButton("Down")
-        self.delete_button = QtWidgets.QPushButton("Delete")
-
         self.layout = QtWidgets.QHBoxLayout()
         self.layout.addWidget(self.label_01)
         self.layout.addWidget(self.output_band_count)
@@ -36,9 +30,7 @@ class SpectralResampleModule(QtWidgets.QWidget):
         self.layout.addWidget(self.label_03)
 
         self.layout.addStretch()
-        self.layout.addWidget(self.up_button)
-        self.layout.addWidget(self.down_button)
-        self.layout.addWidget(self.delete_button)
+        self.layout.addLayout(self.navigation_layout)
         self.setLayout(self.layout)
 
     def process(self, spectral_image):
