@@ -62,7 +62,7 @@ class BandConversionModule(QtWidgets.QWidget):
             self.band2.setValue(value)
 
     def get_step(self):
-        return int((self.maximum_wavelength - self.minimum_wavelength) / (self.bandcount - 1))
+        return (self.maximum_wavelength - self.minimum_wavelength) / (self.bandcount - 1)
 
     def update_values(self, spectral_image):
         # updated internal variables and reset to default if something changed
