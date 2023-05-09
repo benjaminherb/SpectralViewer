@@ -1,4 +1,5 @@
 import scipy
+import numpy as np
 
 
 class SpectralImage:
@@ -13,7 +14,7 @@ class SpectralImage:
             minimum_visible_value = 0
 
         self.data = data[:, :, minimum_visible_value:maximum_visible_value]
-        self.data = self.data / self.data.max() # scale to 0-1
+        self.data = self.data / self.data.max()  # scale to 0-1
         self.wavelengths = wavelengths[minimum_visible_value:maximum_visible_value]
 
     def get_wavelengths(self):
@@ -47,3 +48,12 @@ class SpectralImage:
             fill_value=0, bounds_error=False)
 
         return interpolation_function(wavelengths)
+
+    def rotate_90(self, rotation_count):
+        self.data = np.rot90(self.data, rotation_count, (0, 1))
+
+    def flip_horizontal(self):
+        self.data = np.fliplr(self.data)
+
+    def flip_vertical(self):
+        self.data = np.flipud(self.data)

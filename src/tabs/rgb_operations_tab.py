@@ -2,15 +2,12 @@ from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
 from src.rgb_modules.chromatic_adaptation_module import ChromaticAdaptationModule
 from src.rgb_modules.scale_or_clip_module import ScaleOrClipModule
-from src.rgb_modules.rotate_flip_module import RotateFlipModule
-
 
 
 class RGBOperationsTab(QtWidgets.QWidget):
     change_transfer_operation_id = 0
     chromatic_adaptation_operation_id = 1
     scale_or_clip_operation_id = 2
-    rotate_flip_operation_id = 3
 
     def __init__(self):
         super().__init__()
@@ -51,9 +48,6 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
         if selected_operation_id == self.scale_or_clip_operation_id:
             new_widget = ScaleOrClipModule()
-
-        if selected_operation_id == self.rotate_flip_operation_id:
-            new_widget = RotateFlipModule()
 
         if not new_widget:
             return
