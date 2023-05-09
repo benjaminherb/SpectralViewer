@@ -37,11 +37,13 @@ class ChangeIlluminantModule(AbstractModule):
 
     def process(self, spectral_image):
         wavelengths = spectral_image.get_wavelengths()
+        input_illuminant_name = self.input_illuminant_selector.currentText()
+        output_illuminant_name = self.output_illuminant_selector.currentText()
 
-        input_illuminant = load_illuminant(
-            self.input_illuminant_selector.currentText(), wavelengths)
-        output_illuminant = load_illuminant(
-            self.output_illuminant_selector.currentText(), wavelengths)
+        input_illuminant = load_illuminant(input_illuminant_name, wavelengths)
+        print(input_illuminant)
+        output_illuminant = load_illuminant(output_illuminant_name, wavelengths)
+        print(output_illuminant)
 
         log.info(f"Changing illuminant from {self.input_illuminant_selector.currentText()} "
                  f"to {self.output_illuminant_selector.currentText()}")

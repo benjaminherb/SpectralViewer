@@ -115,3 +115,6 @@ class SpectralViewer(QtWidgets.QMainWindow):
             processed_spectral_image = self.spectral_operations_tab.process(
                 copy.deepcopy(spectral_image))
             self.picker_tab.plot((x, y), spectral_image, processed_spectral_image)
+
+        if self.source_tab.white_reference_button.isChecked():
+            self.source_tab.set_white_reference(x, y)

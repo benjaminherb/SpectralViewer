@@ -1,6 +1,8 @@
 import scipy
 import numpy as np
+import logging
 
+log = logging.getLogger(__name__)
 
 class SpectralImage:
     def __init__(self, data, wavelengths):
@@ -48,6 +50,7 @@ class SpectralImage:
             fill_value=0, bounds_error=False)
 
         return interpolation_function(wavelengths)
+
 
     def rotate_90(self, rotation_count):
         self.data = np.rot90(self.data, rotation_count, (0, 1))

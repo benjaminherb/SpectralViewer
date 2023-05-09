@@ -1,6 +1,7 @@
 import os
 from PyQt6 import QtWidgets
 from src.data_loader.load_image import load_spectral_image
+from src.data_loader.load_illuminants import update_custom_illuminant
 
 
 class SourceTab(QtWidgets.QWidget):
@@ -28,6 +29,11 @@ class SourceTab(QtWidgets.QWidget):
         self.metadata_table.horizontalHeader().setSectionResizeMode(
             0, QtWidgets.QHeaderView.ResizeMode.Stretch)
 
+        # Select white reference
+        self.white_reference_lable = QtWidgets.QLabel("White Reference")
+        self.white_reference_button = QtWidgets.QPushButton("Empty")
+        self.white_reference_button.setCheckable(True)
+
         # Rotate & Flip
         self.rotate_label = QtWidgets.QLabel("Rotate")
         self.rotate_selector = QtWidgets.QComboBox()
@@ -36,19 +42,23 @@ class SourceTab(QtWidgets.QWidget):
         self.vertical_flip_selector.setChecked(False)
         self.horizontal_flip_selector = QtWidgets.QCheckBox("Flip horizontally")
         self.horizontal_flip_selector.setChecked(False)
-        rotate_flip_layout = QtWidgets.QHBoxLayout()
-        rotate_flip_layout.addWidget(self.rotate_label)
-        rotate_flip_layout.addWidget(self.rotate_selector)
-        rotate_flip_layout.addWidget(self.horizontal_flip_selector)
-        rotate_flip_layout.addWidget(self.vertical_flip_selector)
-        rotate_flip_layout.addStretch()
+
+        options_layout = QtWidgets.QHBoxLayout()
+        options_layout.addWidget(self.white_reference_lable)
+        options_layout.addWidget(self.white_reference_button)
+        options_layout.addStretch()
+        options_layout.addWidget(self.rotate_label)
+        options_layout.addWidget(self.rotate_selector)
+        options_layout.addSpacing(10)
+        options_layout.addWidget(self.horizontal_flip_selector)
+        options_layout.addWidget(self.vertical_flip_selector)
 
         self._update_metadata()
 
         layout.addWidget(self.image_path_input, 0, 0)
         layout.addWidget(self.image_path_button, 0, 1)
         layout.addWidget(self.metadata_table, 1, 0, 1, 2)
-        layout.addLayout(rotate_flip_layout, 2, 0, 1, 2)
+        layout.addLayout(options_layout, 2, 0, 1, 2)
 
         self.setLayout(layout)
 
@@ -112,3 +122,9 @@ class SourceTab(QtWidgets.QWidget):
     def get_image(self):
         self.load_image()
         return self.spectral_image
+
+    def set_white_reference(self, x, y):
+        self.white_reference_button.setText(f"{x}, {y}")
+        self.white_reference_button.setChecked(False)
+        update_custom_illuminant(self.spectral_image.get_wavelengths(),
+                                 self.spectral_image.data[x, y])
