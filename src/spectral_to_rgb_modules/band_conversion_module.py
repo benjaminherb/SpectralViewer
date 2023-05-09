@@ -49,10 +49,10 @@ class BandConversionModule(QtWidgets.QWidget):
     def _get_single_selector(self, percentage):
         step = self.get_step()
         band = QtWidgets.QSpinBox()
-        band.setMinimum(self.minimum_wavelength)
-        band.setMaximum(self.maximum_wavelength)
-        band.setSingleStep(step)
-        band.setValue(int(percentage * self.bandcount) * step + self.minimum_wavelength)
+        band.setMinimum(round(self.minimum_wavelength))
+        band.setMaximum(round(self.maximum_wavelength))
+        band.setSingleStep(round(step))
+        band.setValue(round(percentage * self.bandcount * step + self.minimum_wavelength))
         return band
 
     def _check_linked(self, value):
@@ -76,10 +76,10 @@ class BandConversionModule(QtWidgets.QWidget):
 
             step = self.get_step()
             for band, percentage in zip([self.band0, self.band1, self.band2], [0.8, 0.5, 0.2]):
-                band.setMinimum(self.minimum_wavelength)
-                band.setMaximum(self.maximum_wavelength)
-                band.setSingleStep(step)
-                band.setValue(int(percentage * self.bandcount) * step + self.minimum_wavelength)
+                band.setMinimum(round(self.minimum_wavelength))
+                band.setMaximum(round(self.maximum_wavelength))
+                band.setSingleStep(round(step))
+                band.setValue(round(percentage * self.bandcount * step + self.minimum_wavelength))
 
     def process(self, spectral_image):
         log.info(f"Converting from spectral to RGB using {self.get_bands()} bands")
