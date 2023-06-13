@@ -34,11 +34,13 @@ class AnalyzeTab(QtWidgets.QWidget):
         self.snapshot_show_button_02.clicked.connect(lambda: self._show("S2"))
 
         self.difference = None
-        self.difference_label = QtWidgets.QLabel("Difference:")
+        self.difference_label = QtWidgets.QLabel("DeltaE 2000:")
         self.difference_text = QtWidgets.QLineEdit("Empty")
         self.difference_text.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.difference_text.setDisabled(True)
         self.difference_text.setMinimumWidth(120)
+        self.boost_selector = QtWidgets.QComboBox()
+        self.boost_selector.addItems(['1x', '2x', '4x', '8x', '16x', '32x'])
         self.difference_show_button = QtWidgets.QPushButton("Show difference")
         self.difference_show_button.clicked.connect(lambda: self._show("Diff"))
 
@@ -53,13 +55,14 @@ class AnalyzeTab(QtWidgets.QWidget):
         self.layout.addWidget(self.snapshot_show_button_02, 1, 3)
         self.layout.addWidget(self.difference_label, 2, 0)
         self.layout.addWidget(self.difference_text, 2, 1)
+        self.layout.addWidget(self.boost_selector, 2, 2)
         self.layout.addWidget(self.difference_show_button, 2, 3)
         self.layout.setColumnStretch(4, 1)
         self.layout.setRowStretch(3, 1)
         self.setLayout(self.layout)
 
     def _save(self, slot):
-        image = self.parent.load_image()
+        image = self.parent.process_image()
         if slot == 1:
             self.snapshot_01 = image
             self.snapshot_text_01.setText(datetime.now().strftime("%H:%M:%S"))
@@ -75,9 +78,15 @@ class AnalyzeTab(QtWidgets.QWidget):
         if image == "Diff":
             if self.snapshot_01 is not None and self.snapshot_02 is not None:
                 self._calculate_difference()
-                self.parent.display_image(self.difference)
+
+                boost_factor = int(self.boost_selector.currentText()[0:-1])
+                self.parent.display_image(self.difference * boost_factor)
 
     def _calculate_difference(self):
         if self.snapshot_01 is not None and self.snapshot_02 is not None:
-            self.difference = np.absolute(self.snapshot_01 - self.snapshot_02)
-            self.difference_text.setText(f"{np.mean(self.difference):.8f}")
+
+            deltae = colour.delta_E(
+                colour.XYZ_to_Lab(colour.sRGB_to_XYZ(self.snapshot_01)),
+                colour.XYZ_to_Lab(colour.sRGB_to_XYZ(self.snapshot_02)))
+            self.difference = np.stack([deltae, deltae, deltae], 2) / 100
+            self.difference_text.setText(f"{np.mean(deltae):.8f}")

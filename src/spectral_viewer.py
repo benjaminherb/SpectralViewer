@@ -1,6 +1,6 @@
 from PyQt6 import QtWidgets, QtGui, QtCore
 import numpy as np
-import copy
+from copy import deepcopy
 import logging
 from src.tabs.source_tab import SourceTab
 from src.tabs.spectral_to_rgb_tab import SpectralToRGBTab
@@ -68,7 +68,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.hotkey = QtGui.QShortcut(QtCore.Qt.Key.Key_R, self)
         self.hotkey.activated.connect(self.show_preview_image)
 
-    def load_image(self):
+    def process_image(self):
         log.info("Loading image")
         spectral_image = self.source_tab.get_image()
 
@@ -88,20 +88,20 @@ class SpectralViewer(QtWidgets.QMainWindow):
         self.image.setPixmap(QtGui.QPixmap.fromImage(q_image))
 
     def show_preview_image(self):
-        image = self.load_image()
+        image = self.process_image()
         self.display_image(image)
 
     def tab_bar_was_clicked(self, index):
         if self.tabs.widget(index) == self.picker_tab:
             spectral_image = self.source_tab.get_image()
             processed_spectral_image = self.spectral_operations_tab.process(
-                copy.deepcopy(spectral_image))
+                deepcopy(spectral_image))
             self.picker_tab.update_plot(spectral_image, processed_spectral_image)
 
         if self.tabs.widget(index) == self.spectrogram_tab:
             spectral_image = self.source_tab.get_image()
             processed_spectral_image = self.spectral_operations_tab.process(
-                copy.deepcopy(spectral_image))
+                deepcopy(spectral_image))
             self.spectrogram_tab.plot(spectral_image, processed_spectral_image)
 
     def mouse_move_over_image(self, x, y):
@@ -112,9 +112,9 @@ class SpectralViewer(QtWidgets.QMainWindow):
     def mouse_clicked_on_image(self, x, y):
         if self.picker_tab.isVisible():
             spectral_image = self.source_tab.get_image()
-            processed_spectral_image = self.spectral_operations_tab.process(
-                copy.deepcopy(spectral_image))
-            self.picker_tab.plot((x, y), spectral_image, processed_spectral_image)
+            processed_spectral_image = self.spectral_operations_tab.get_processed_spectral_image()
+            rgb_image = self.rgb_operations_tab.get_processed_image()
+            self.picker_tab.plot((x, y), spectral_image, processed_spectral_image, rgb_image)
 
         if self.source_tab.white_reference_button.isChecked():
             self.source_tab.set_white_reference(x, y)

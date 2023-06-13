@@ -52,8 +52,8 @@ def get_illuminant_names():
 
 def update_custom_illuminant(wavelengths, values):
     global custom_illuminant
-    custom_illuminant = {'values': (values / max(values)).flatten(),
-                         'wavelengths': wavelengths.flatten()}
+    custom_illuminant = {'values': (values / max(values)),
+                         'wavelengths': wavelengths}
 
 
 def load_illuminant(illuminant_name, wavelengths=None, interpolation_method='linear'):
@@ -84,7 +84,8 @@ def load_illuminant(illuminant_name, wavelengths=None, interpolation_method='lin
     interpolated_illuminant = interpolation_function(wavelengths)
 
     # cie illuminants are usually scaled to 100 at 560nm
-    interpolated_illuminant = interpolated_illuminant / interpolation_function(560)
+    # interpolated_illuminant = interpolated_illuminant / interpolation_function(560)
+    interpolated_illuminant = interpolated_illuminant / max(interpolated_illuminant)
     interpolated_illuminant = interpolated_illuminant.flatten()  # in case it is 2d not 3d
 
     return interpolated_illuminant

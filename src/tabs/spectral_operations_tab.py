@@ -3,6 +3,7 @@ from src.spectral_modules.resample_module import SpectralResampleModule
 from src.spectral_modules.change_illuminant_module import ChangeIlluminantModule
 from src.spectral_modules.filter_module import FilterModule
 from src.spectral_modules.saturation_module import SaturationModule
+from copy import deepcopy
 
 
 class SpectralOperationsTab(QtWidgets.QWidget):
@@ -15,6 +16,7 @@ class SpectralOperationsTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.operations = []
+        self.processed_spectral_image = None
 
         self.new_operation_selector = QtWidgets.QComboBox()
         self.new_operation_selector.addItems(
@@ -33,6 +35,7 @@ class SpectralOperationsTab(QtWidgets.QWidget):
         self.layout.addLayout(self.operations_layout)
         self.layout.addStretch()
         self.setLayout(self.layout)
+
 
     def _add_operation(self, selected_operation_id=None):
         if not selected_operation_id:
@@ -97,11 +100,15 @@ class SpectralOperationsTab(QtWidgets.QWidget):
             self.operations_layout.insertWidget(moved_index, current_widget)
             self.operations_layout.insertWidget(current_index, upper_widget)
 
-    def process(self, image):
+    def process(self, spectral_image):
         for index in range(self.operations_layout.count()):
             operation = self.operations_layout.itemAt(index).widget()
             if not operation:
                 continue
-            image = operation.process(image)
+            image = operation.process(spectral_image)
 
-        return image
+        self.processed_spectral_image = deepcopy(spectral_image)
+        return spectral_image
+
+    def get_processed_spectral_image(self):
+        return deepcopy(self.processed_spectral_image)

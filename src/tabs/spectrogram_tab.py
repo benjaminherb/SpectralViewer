@@ -2,6 +2,8 @@ from PyQt6 import QtWidgets, QtGui, QtCore
 import pyqtgraph as pg
 import numpy as np
 
+from src.data_loader.load_illuminants import load_illuminant
+
 
 class SpectrogramTab(QtWidgets.QWidget):
     def __init__(self):

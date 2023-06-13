@@ -1,7 +1,9 @@
 import os
+import numpy as np
 from PyQt6 import QtWidgets
 from src.data_loader.load_image import load_spectral_image
 from src.data_loader.load_illuminants import update_custom_illuminant
+from copy import deepcopy
 
 
 class SourceTab(QtWidgets.QWidget):
@@ -12,7 +14,7 @@ class SourceTab(QtWidgets.QWidget):
 
         # Input field
         self.image_path_input = QtWidgets.QLineEdit()
-        self.image_path_input.setText("./res/images/ARAD_1K_0098.mat")
+        self.image_path_input.setText("./res/images/054/capture/054.raw")
         self.image_path_button = QtWidgets.QPushButton("Load Image")
         self.image_path_button.pressed.connect(self._choose_file)
 
@@ -61,12 +63,14 @@ class SourceTab(QtWidgets.QWidget):
         layout.addLayout(options_layout, 2, 0, 1, 2)
 
         self.setLayout(layout)
+        self.load_image()
 
     def _choose_file(self):
         start_dir = self.get_path()
         chosen = QtWidgets.QFileDialog().getOpenFileName(directory=start_dir)
         if chosen[0]:
             self.image_path_input.setText(chosen[0])
+            self.load_image()
 
     def _update_metadata(self):
         # Set some data in the table
@@ -108,7 +112,6 @@ class SourceTab(QtWidgets.QWidget):
 
         except OSError as e:
             print(e)
-            return
 
     def _rotate_and_flip(self):
         # the index indicates how often the image is rotated by 90°
@@ -120,11 +123,11 @@ class SourceTab(QtWidgets.QWidget):
             self.spectral_image.flip_horizontal()
 
     def get_image(self):
-        self.load_image()
-        return self.spectral_image
+        return deepcopy(self.spectral_image)
 
     def set_white_reference(self, x, y):
         self.white_reference_button.setText(f"{x}, {y}")
         self.white_reference_button.setChecked(False)
         update_custom_illuminant(self.spectral_image.get_wavelengths(),
+                                 # np.median(self.spectral_image.data[x - 5:x + 5, y - 5:y + 5], axis=(0, 1)))
                                  self.spectral_image.data[x, y])

@@ -4,6 +4,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class SpectralImage:
     def __init__(self, data, wavelengths):
         # limit values to the visible spectrum (based on 1931 2° Observer)
@@ -11,7 +12,7 @@ class SpectralImage:
         self.original_maximum_wavelength = wavelengths.max()
 
         minimum_visible_value = wavelengths.searchsorted(360) - 1
-        maximum_visible_value = wavelengths.searchsorted(830)
+        maximum_visible_value = wavelengths.searchsorted(1200)
         if minimum_visible_value == -1:
             minimum_visible_value = 0
 
@@ -50,7 +51,6 @@ class SpectralImage:
             fill_value=0, bounds_error=False)
 
         return interpolation_function(wavelengths)
-
 
     def rotate_90(self, rotation_count):
         self.data = np.rot90(self.data, rotation_count, (0, 1))

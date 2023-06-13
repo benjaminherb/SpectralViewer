@@ -41,9 +41,7 @@ class ChangeIlluminantModule(AbstractModule):
         output_illuminant_name = self.output_illuminant_selector.currentText()
 
         input_illuminant = load_illuminant(input_illuminant_name, wavelengths)
-        print(input_illuminant)
         output_illuminant = load_illuminant(output_illuminant_name, wavelengths)
-        print(output_illuminant)
 
         log.info(f"Changing illuminant from {self.input_illuminant_selector.currentText()} "
                  f"to {self.output_illuminant_selector.currentText()}")

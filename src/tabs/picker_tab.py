@@ -28,12 +28,18 @@ class PickerTab(QtWidgets.QWidget):
         self.plot_widget.setBackground("default")
 
         self.position_label = QtWidgets.QLabel()
+        self.picked_data_label = QtWidgets.QLabel()
+
+        info_layout = QtWidgets.QHBoxLayout()
+        info_layout.addWidget(self.position_label)
+        info_layout.addWidget(self.picked_data_label)
+
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.plot_widget)
-        layout.addWidget(self.position_label)
+        layout.addLayout(info_layout)
         self.setLayout(layout)
 
-    def plot(self, pixel_position, spectral_image, processed_spectral_image):
+    def plot(self, pixel_position, spectral_image, processed_spectral_image, rgb_image=None):
         x, y = pixel_position
         if x in range(0, spectral_image.width()) and y in range(0, spectral_image.height()):
             self.plot_widget.getPlotItem().clear()
@@ -45,7 +51,11 @@ class PickerTab(QtWidgets.QWidget):
 
             self.plot_widget.plot(processed_spectral_image.get_wavelengths(),
                                   processed_spectral_pixel_values,
-                                  pen=self.post_pen, name="Processed")
+                                  pen=self.post_pen, name=f"Processed")
+
+            if rgb_image is not None:
+                self.picked_data_label.setText(
+                    f" R: {rgb_image[x, y][0]:.4f} / G: {rgb_image[x, y][1]:.4f} / B: {rgb_image[x, y][2]:.4f}")
 
             self.previous_pixel_position = pixel_position
 
@@ -54,4 +64,5 @@ class PickerTab(QtWidgets.QWidget):
 
     def show_position(self, position):
         x, y = position
-        self.position_label.setText(f"Position: {x},{y}")
+        self.position_label.setText(
+            f"Position: {self.previous_pixel_position[0]}, {self.previous_pixel_position[1]} ({x},{y})")

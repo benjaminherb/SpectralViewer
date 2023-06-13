@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
 from src.rgb_modules.chromatic_adaptation_module import ChromaticAdaptationModule
 from src.rgb_modules.scale_or_clip_module import ScaleOrClipModule
+from copy import deepcopy
 
 
 class RGBOperationsTab(QtWidgets.QWidget):
@@ -12,10 +13,11 @@ class RGBOperationsTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.operations = []
+        self.image = None
 
         self.new_operation_selector = QtWidgets.QComboBox()
         self.new_operation_selector.addItems(
-            ["Change transfer curve", "Chromatic Adaptation", "Scale or Clip", "Rotate and Flip"])
+            ["Change transfer curve", "Chromatic Adaptation", "Scale or Clip"])
         self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_operation_layout = QtWidgets.QHBoxLayout()
@@ -89,4 +91,8 @@ class RGBOperationsTab(QtWidgets.QWidget):
                 continue
             image = operation.process(image)
 
+        self.image = deepcopy(image)
         return image
+
+    def get_processed_image(self):
+        return deepcopy(self.image)

@@ -45,4 +45,11 @@ def _load_specim(path):
 
     corrected = np.subtract(data, dark)
 
+    calibration_directory = './res/calibration/specim_iq'
+    if os.path.isdir(calibration_directory):
+        calibration_data = spectral.io.envi.open(
+            os.path.join(calibration_directory, "Radiometric_1x1.hdr"),
+            os.path.join(calibration_directory, "Radiometric_1x1.cal"))
+        corrected = corrected * np.array(calibration_data.load())
+
     return SpectralImage(corrected, np.array(data_ref.bands.centers))
