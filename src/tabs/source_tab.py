@@ -40,10 +40,13 @@ class SourceTab(QtWidgets.QWidget):
         self.rotate_label = QtWidgets.QLabel("Rotate")
         self.rotate_selector = QtWidgets.QComboBox()
         self.rotate_selector.addItems(["0°", "90°", "180°", "270°"])
+        self.rotate_selector.currentIndexChanged.connect(self.load_image)
         self.vertical_flip_selector = QtWidgets.QCheckBox("Flip vertically")
         self.vertical_flip_selector.setChecked(False)
+        self.vertical_flip_selector.stateChanged.connect(self.load_image)
         self.horizontal_flip_selector = QtWidgets.QCheckBox("Flip horizontally")
         self.horizontal_flip_selector.setChecked(False)
+        self.horizontal_flip_selector.stateChanged.connect(self.load_image)
 
         options_layout = QtWidgets.QHBoxLayout()
         options_layout.addWidget(self.white_reference_lable)
