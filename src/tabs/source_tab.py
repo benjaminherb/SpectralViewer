@@ -132,5 +132,4 @@ class SourceTab(QtWidgets.QWidget):
         self.white_reference_button.setText(f"{x}, {y}")
         self.white_reference_button.setChecked(False)
         update_custom_illuminant(self.spectral_image.get_wavelengths(),
-                                 # np.median(self.spectral_image.data[x - 5:x + 5, y - 5:y + 5], axis=(0, 1)))
-                                 self.spectral_image.data[x, y])
+                                 np.median(self.spectral_image.data[y - 4:y + 4, x - 4:x + 4], axis=(0, 1)))
