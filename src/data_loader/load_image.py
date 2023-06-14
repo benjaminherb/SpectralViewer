@@ -20,7 +20,17 @@ def _load_mat(path):
         bands = None
         if 'bands' in mat:
             bands = np.array(mat['bands']).squeeze()
-    return SpectralImage(spectral_image, bands)
+
+    metadata = {
+        'Filename': os.path.basename(path),
+        'Size': f"{spectral_image.shape[0]} x {spectral_image.shape[1]} px",
+        'Spectral Bands': spectral_image.shape[2],
+        'Spectral Range': f"{min(bands)} - {max(bands)} nm",
+        'Data Type': spectral_image.dtype.name,
+        'Value Range': f"{spectral_image.min()} - {spectral_image.max()}",
+    }
+
+    return SpectralImage(spectral_image, bands, metadata)
 
 
 def _load_specim(path):
@@ -30,10 +40,6 @@ def _load_specim(path):
     data_ref = spectral.io.envi.open(
         os.path.join(directory, file + ".hdr"),
         os.path.join(directory, file + ".raw"))
-
-    # white_ref = spectral.io.envi.open(
-    #    os.path.join(directory, "WHITEREF_" + file + ".hdr"),
-    #    os.path.join(directory, "WHITEREF_" + file + ".raw"))
 
     dark_ref = spectral.io.envi.open(
         os.path.join(directory, "DARKREF_" + file + ".hdr"),
@@ -45,11 +51,26 @@ def _load_specim(path):
 
     corrected = np.subtract(data, dark)
 
+    corrected = corrected / (2 ** 12 - dark.mean())
+
     calibration_directory = './res/calibration/specim_iq'
+    was_corrected = False
     if os.path.isdir(calibration_directory):
         calibration_data = spectral.io.envi.open(
             os.path.join(calibration_directory, "Radiometric_1x1.hdr"),
             os.path.join(calibration_directory, "Radiometric_1x1.cal"))
         corrected = corrected * np.array(calibration_data.load())
+        was_corrected = True
 
-    return SpectralImage(corrected, np.array(data_ref.bands.centers))
+    metadata = {
+        'Filename': file,
+        'Size': f"{data.shape[0]} x {data.shape[1]} px",
+        'Spectral Bands': data.shape[2],
+        'Spectral Range': f"{min(data_ref.bands.centers)} - {max(data_ref.bands.centers)} nm",
+        'Data Type': data_ref.metadata.get('data type') + " bit",
+        'Value Range': f"{data.min()} - {data.max()}",
+        'Mean Black Value': dark.mean(),
+        'Integration Time': data_ref.metadata.get('tint') + " ms",
+        'Date': data_ref.metadata.get('acquisition date'),
+    }
+    return SpectralImage(corrected, np.array(data_ref.bands.centers), metadata)

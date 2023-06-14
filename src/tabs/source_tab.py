@@ -76,32 +76,14 @@ class SourceTab(QtWidgets.QWidget):
             self.load_image()
 
     def _update_metadata(self):
-        # Set some data in the table
-        self.metadata_table.setItem(
-            0, 0, QtWidgets.QTableWidgetItem(os.path.basename(self.get_path())))
-        w, h, d = ('-', '-', '-')
-        value_type, value_min, value_max = ("", "", "")
-        min_wavelength, max_wavelength = ("", "")
-
-        if self.spectral_image is not None:
-            w, h, d = self.spectral_image.data.shape
-            value_type = self.spectral_image.data.dtype.name
-            value_min = self.spectral_image.data.min()
-            value_max = self.spectral_image.data.max()
-            min_wavelength = self.spectral_image.get_minimum_wavelength()
-            if self.spectral_image.original_minimum_wavelength != min_wavelength:
-                min_wavelength = f"{min_wavelength} ({self.spectral_image.original_minimum_wavelength})"
-            max_wavelength = self.spectral_image.get_maximum_wavelength()
-            if self.spectral_image.original_maximum_wavelength != max_wavelength:
-                max_wavelength = f"{max_wavelength} ({self.spectral_image.original_maximum_wavelength})"
-
-        self.metadata_table.setItem(1, 0, QtWidgets.QTableWidgetItem(f'{w} x {h}'))
-        self.metadata_table.setItem(2, 0, QtWidgets.QTableWidgetItem(f'{d}'))
-        self.metadata_table.setItem(3, 0, QtWidgets.QTableWidgetItem(f'{min_wavelength} nm'))
-        self.metadata_table.setItem(4, 0, QtWidgets.QTableWidgetItem(f'{max_wavelength} nm'))
-        self.metadata_table.setItem(5, 0, QtWidgets.QTableWidgetItem(f'{value_type}'))
-        self.metadata_table.setItem(6, 0, QtWidgets.QTableWidgetItem(f'{value_min}'))
-        self.metadata_table.setItem(7, 0, QtWidgets.QTableWidgetItem(f'{value_max}'))
+        if self.spectral_image and self.spectral_image.metadata:
+            self.metadata_table.setRowCount(len(self.spectral_image.metadata.keys()))
+            i = 0
+            # self.metadata_table.setVerticalHeaderLabels(self.spectral_image.metadata.keys())
+            for key, value in self.spectral_image.metadata.items():
+                self.metadata_table.setVerticalHeaderItem(i, QtWidgets.QTableWidgetItem(key))
+                self.metadata_table.setItem(i, 0, QtWidgets.QTableWidgetItem(str(value)))
+                i = i+1
 
     def get_path(self):
         return self.image_path_input.text()
