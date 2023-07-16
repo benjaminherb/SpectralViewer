@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets
 from src.rgb_modules.change_transfer_curve_module import ChangeTransferCurveModule
 from src.rgb_modules.chromatic_adaptation_module import ChromaticAdaptationModule
 from src.rgb_modules.scale_or_clip_module import ScaleOrClipModule
+from src.rgb_modules.exposure_module import ExposureModule
 from copy import deepcopy
 
 
@@ -9,6 +10,7 @@ class RGBOperationsTab(QtWidgets.QWidget):
     change_transfer_operation_id = 0
     chromatic_adaptation_operation_id = 1
     scale_or_clip_operation_id = 2
+    exposure_operation_id = 3
 
     def __init__(self):
         super().__init__()
@@ -17,7 +19,7 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
         self.new_operation_selector = QtWidgets.QComboBox()
         self.new_operation_selector.addItems(
-            ["Change transfer curve", "Chromatic Adaptation", "Scale or Clip"])
+            ["Change transfer curve", "Chromatic Adaptation", "Scale or Clip", "Exposure"])
         self.add_new_operation_button = QtWidgets.QPushButton("Add operation")
         self.add_new_operation_button.pressed.connect(self._add_operation)
         self.add_operation_layout = QtWidgets.QHBoxLayout()
@@ -50,6 +52,9 @@ class RGBOperationsTab(QtWidgets.QWidget):
 
         if selected_operation_id == self.scale_or_clip_operation_id:
             new_widget = ScaleOrClipModule()
+
+        if selected_operation_id == self.exposure_operation_id:
+            new_widget = ExposureModule()
 
         if not new_widget:
             return
