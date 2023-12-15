@@ -1,9 +1,12 @@
 import os.path
 import h5py
 import numpy as np
+import scipy.io
 import spectral
 from src.util.spectral_image import SpectralImage
+import logging
 
+log = logging.getLogger(__name__)
 
 def load_spectral_image(path):
     # load spectral image and bands from a .mat file
@@ -15,6 +18,23 @@ def load_spectral_image(path):
 
 
 def _load_mat(path):
+    mat = scipy.io.loadmat(path)
+    spectral_image = mat['data']
+    wavelengths = mat['wavelengths'].squeeze()
+    print(wavelengths)
+
+    metadata = {
+        'Filename': os.path.basename(path),
+        'Size': f"{spectral_image.shape[0]} x {spectral_image.shape[1]} px",
+        'Spectral Bands': spectral_image.shape[2],
+        'Spectral Range': f"{min(wavelengths)} - {max(wavelengths)} nm",
+        'Data Type': spectral_image.dtype.name,
+        'Value Range': f"{spectral_image.min()} - {spectral_image.max()}",
+    }
+    return SpectralImage(spectral_image, wavelengths, metadata)
+
+def _load_hdf5(path):
+
     with h5py.File(path, 'r') as mat:
         spectral_image = np.array(mat['cube']).T
         bands = None
@@ -41,14 +61,22 @@ def _load_specim(path):
         os.path.join(directory, file + ".hdr"),
         os.path.join(directory, file + ".raw"))
 
-    dark_ref = spectral.io.envi.open(
-        os.path.join(directory, "DARKREF_" + file + ".hdr"),
-        os.path.join(directory, "DARKREF_" + file + ".raw"))
+    dark_ref = None
+    if os.path.exists(os.path.join(directory, "DARKREF_" + file + ".hdr")):
+        dark_ref = spectral.io.envi.open(
+            os.path.join(directory, "DARKREF_" + file + ".hdr"),
+            os.path.join(directory, "DARKREF_" + file + ".raw"))
+    if os.path.exists(os.path.join(directory, file + "_dark.hdr")):
+        dark_ref = spectral.io.envi.open(
+            os.path.join(directory, file + "_dark.hdr"),
+            os.path.join(directory, file + "_dark.raw"))
 
-    # white = np.array(white_ref.load())
-    dark = np.array(dark_ref.load())
+    if dark_ref is None:
+        log.error(f"No dark ref file was found for {file}")
+        raise FileNotFoundError("No dark ref file was found")
+
     data = np.array(data_ref.load())
-
+    dark = np.array(dark_ref.load())
     corrected = np.subtract(data, dark)
 
     corrected = corrected / (2 ** 12 - dark.mean())
