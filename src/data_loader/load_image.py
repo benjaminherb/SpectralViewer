@@ -41,7 +41,7 @@ def _load_mat(path):
 
     if 'metadata' in mat:
         file_metadata = mat.get('metadata')
-        if hasattr(file_metadata, 'illumination'):
+        if hasattr(file_metadata, 'illumination') and file_metadata.illumination:
             update_custom_illuminant(wavelengths, file_metadata.illumination, 'File')
         metadata.update({
             'Date': file_metadata.date,
@@ -50,7 +50,6 @@ def _load_mat(path):
             'Original Value Range': f"{file_metadata.min} - {file_metadata.max}",
             'Exposure': file_metadata.exposure,
         })
-
 
     return SpectralImage(spectral_image, wavelengths, metadata)
 
@@ -140,6 +139,7 @@ def _load_dataset_raw(path):
 
     corrected = np.rot90(corrected, 3)
     return SpectralImage(corrected, wavelengths, metadata, white=white)
+
 
 def _load_specim(path):
     directory = os.path.dirname(path)
