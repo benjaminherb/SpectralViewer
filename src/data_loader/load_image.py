@@ -3,10 +3,13 @@ import h5py
 import numpy as np
 import scipy.io
 import spectral
+import json
 from src.util.spectral_image import SpectralImage
+from src.data_loader.load_illuminants import update_custom_illuminant
 import logging
 
 log = logging.getLogger(__name__)
+
 
 def load_spectral_image(path):
     # load spectral image and bands from a .mat file
@@ -14,14 +17,18 @@ def load_spectral_image(path):
         return _load_mat(path)
 
     if path.lower().endswith(('.hdr', '.raw')):
-        return _load_specim(path)
+        directory = os.path.dirname(path)
+        filename = get_basename(path)
+        if os.path.exists(os.path.join(directory, f'{filename}_metadata.json')):
+            return _load_dataset_raw(path)
+        else:
+            return _load_specim(path)
 
 
 def _load_mat(path):
-    mat = scipy.io.loadmat(path)
+    mat = scipy.io.loadmat(path, struct_as_record=False, squeeze_me=True)
     spectral_image = mat['data']
     wavelengths = mat['wavelengths'].squeeze()
-    print(wavelengths)
 
     metadata = {
         'Filename': os.path.basename(path),
@@ -31,7 +38,15 @@ def _load_mat(path):
         'Data Type': spectral_image.dtype.name,
         'Value Range': f"{spectral_image.min()} - {spectral_image.max()}",
     }
+
+    if 'metadata' in mat:
+        file_metadata = mat.get('metadata')
+        if hasattr(file_metadata, 'illumination'):
+            update_custom_illuminant(wavelengths, file_metadata.illumination, 'File')
+
+
     return SpectralImage(spectral_image, wavelengths, metadata)
+
 
 def _load_hdf5(path):
 
@@ -53,27 +68,83 @@ def _load_hdf5(path):
     return SpectralImage(spectral_image, bands, metadata)
 
 
-def _load_specim(path):
+def _load_dataset_raw(path):
     directory = os.path.dirname(path)
-    file = os.path.basename(path)[:-4]  # remove extension
+    file = get_basename(path)
 
     data_ref = spectral.io.envi.open(
         os.path.join(directory, file + ".hdr"),
         os.path.join(directory, file + ".raw"))
 
-    dark_ref = None
-    if os.path.exists(os.path.join(directory, "DARKREF_" + file + ".hdr")):
-        dark_ref = spectral.io.envi.open(
-            os.path.join(directory, "DARKREF_" + file + ".hdr"),
-            os.path.join(directory, "DARKREF_" + file + ".raw"))
-    if os.path.exists(os.path.join(directory, file + "_dark.hdr")):
-        dark_ref = spectral.io.envi.open(
-            os.path.join(directory, file + "_dark.hdr"),
-            os.path.join(directory, file + "_dark.raw"))
+    dark_ref = spectral.io.envi.open(
+        os.path.join(directory, file + "_dark.hdr"),
+        os.path.join(directory, file + "_dark.raw"))
 
-    if dark_ref is None:
-        log.error(f"No dark ref file was found for {file}")
-        raise FileNotFoundError("No dark ref file was found")
+    white = None
+    if os.path.exists(os.path.join(directory, file + "_whiteref.hdr")):
+        whiteref = spectral.io.envi.open(
+            os.path.join(directory, file + "_whiteref.hdr"),
+            os.path.join(directory, file + "_whiteref.raw"))
+        whiteref_dark = spectral.io.envi.open(
+            os.path.join(directory, file + "_whiteref_dark.hdr"),
+            os.path.join(directory, file + "_whiteref_dark.raw"))
+        white = whiteref.load()
+        white_dark = whiteref_dark.load()
+        white = np.subtract(white, white_dark)
+        white = white / (2 ** 12 - white_dark.mean())
+
+    data = np.array(data_ref.load())
+    dark = np.array(dark_ref.load())
+    corrected = np.subtract(data, dark)
+    corrected = corrected / (2 ** 12 - dark.mean())
+
+    calibration_directory = './res/calibration/specim_iq'
+    was_corrected = False
+    if os.path.isdir(calibration_directory):
+        calibration_data = spectral.io.envi.open(
+            os.path.join(calibration_directory, "Radiometric_1x1.hdr"),
+            os.path.join(calibration_directory, "Radiometric_1x1.cal"))
+        corrected = corrected * np.array(calibration_data.load())
+        if white is not None:
+            white = white * np.array(calibration_data.load())
+        was_corrected = True
+
+    metadata = {
+        'Filename': file,
+        'Size': f"{data.shape[0]} x {data.shape[1]} px",
+        'Spectral Bands': data.shape[2],
+        'Spectral Range': f"{min(data_ref.bands.centers)} - {max(data_ref.bands.centers)} nm",
+        'Data Type': data_ref.metadata.get('data type') + " bit",
+        'Value Range': f"{data.min()} - {data.max()}",
+        'Mean Black Value': dark.mean(),
+        'Integration Time': data_ref.metadata.get('tint') + " ms",
+        'Date': data_ref.metadata.get('acquisition date'),
+        'Corrected': was_corrected,
+    }
+
+    wavelengths = np.array(data_ref.bands.centers)
+    if white is not None:
+        file_metadata = {}
+        with open(os.path.join(directory, f"{file}_metadata.json")) as mdf:
+            file_metadata = json.load(mdf)
+        wpos = file_metadata['white_patch']
+        white = np.mean(white[wpos[0]:wpos[0]+wpos[2], wpos[1]:wpos[1]+wpos[3]], axis=(0, 1))
+        update_custom_illuminant(wavelengths, white, 'File')
+
+    corrected = np.rot90(corrected, 3)
+    return SpectralImage(corrected, wavelengths, metadata, white=white)
+
+def _load_specim(path):
+    directory = os.path.dirname(path)
+    file = get_basename(path)
+
+    data_ref = spectral.io.envi.open(
+        os.path.join(directory, file + ".hdr"),
+        os.path.join(directory, file + ".raw"))
+
+    dark_ref = spectral.io.envi.open(
+        os.path.join(directory, "DARKREF_" + file + ".hdr"),
+        os.path.join(directory, "DARKREF_" + file + ".raw"))
 
     data = np.array(data_ref.load())
     dark = np.array(dark_ref.load())
@@ -90,6 +161,8 @@ def _load_specim(path):
         corrected = corrected * np.array(calibration_data.load())
         was_corrected = True
 
+    corrected = np.rot90(corrected, 3)
+
     metadata = {
         'Filename': file,
         'Size': f"{data.shape[0]} x {data.shape[1]} px",
@@ -100,5 +173,15 @@ def _load_specim(path):
         'Mean Black Value': dark.mean(),
         'Integration Time': data_ref.metadata.get('tint') + " ms",
         'Date': data_ref.metadata.get('acquisition date'),
+        'Corrected': was_corrected,
     }
-    return SpectralImage(corrected, np.array(data_ref.bands.centers), metadata)
+    wavelengths = np.array(data_ref.bands.centers)
+
+    return SpectralImage(corrected, wavelengths, metadata)
+
+def get_basename(path):
+    file = os.path.basename(path)
+    for snip in ('.hdr', '.raw', '.RAW', '.HDR', '_whiteref', '_dark',
+                 'DARKREF_', 'WHITEDARKREF_', 'WHITEREF_'):
+        file = file.replace(snip, "")
+    return file

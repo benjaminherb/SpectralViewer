@@ -1,11 +1,8 @@
 import pandas as pd
 import numpy as np
+import os
 import scipy
-
-# default custom illuminant
-custom_illuminant = {'wavelengths': np.linspace(400, 700, 31),
-                     'values': np.ones(31)}
-
+from src import TEMP_DIR
 
 def get_illuminants():
     return {
@@ -42,6 +39,7 @@ def get_illuminants():
         'Dedolight Aspheric2 3200 Tungsten': {'file': 'Dedolight_TU_normalized_v2.csv',
                                               'name': 'Dedolight_Aspheric2_TU_L1_3200K_Flood'},
         'Eiko Halogen': {'file': 'Eiko_Solux_i1_4700k_tungsten_halogen.csv', 'name': ""},
+        'File': {},
         'Custom': {},
     }
 
@@ -50,18 +48,18 @@ def get_illuminant_names():
     return list(get_illuminants().keys())
 
 
-def update_custom_illuminant(wavelengths, values):
-    global custom_illuminant
-    custom_illuminant = {'values': (values / max(values)),
-                         'wavelengths': wavelengths}
+def update_custom_illuminant(wavelengths, values, filename='Custom'):
+    np.savetxt(os.path.join(TEMP_DIR.name, filename + '_illuminant.csv'),
+               np.stack((wavelengths, values/max(values))).T, delimiter=',')
 
 
 def load_illuminant(illuminant_name, wavelengths=None, interpolation_method='linear'):
     illuminant = get_illuminants()[illuminant_name]
 
-    if not illuminant:  # custom
-        illuminant_values = custom_illuminant['values']
-        illuminant_wavelengths = custom_illuminant['wavelengths']
+    if illuminant_name in ('Custom', 'File'):
+        data = pd.read_csv(os.path.join(TEMP_DIR.name, f'{illuminant_name}_illuminant.csv'), index_col=0, header=None)
+        illuminant_wavelengths = data.index.values
+        illuminant_values = data.values
 
     elif not illuminant['name']:  # simple csv with only one illuminant
         data = pd.read_csv(f'./res/illuminants/{illuminant["file"]}', index_col=0, header=None)

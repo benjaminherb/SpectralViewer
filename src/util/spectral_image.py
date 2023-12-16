@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 class SpectralImage:
-    def __init__(self, data, wavelengths, metadata=None):
+    def __init__(self, data, wavelengths, metadata=None, white=None):
         # limit values to the visible spectrum (based on 1931 2° Observer)
         self.original_minimum_wavelength = wavelengths.min()
         self.original_maximum_wavelength = wavelengths.max()

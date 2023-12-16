@@ -1,7 +1,9 @@
+import os
 import sys
 from PyQt6 import QtWidgets
 from src.spectral_viewer import SpectralViewer
 import logging
+import tempfile
 
 
 def main():
@@ -10,7 +12,10 @@ def main():
     app.setApplicationName("SpectralViewer")
     viewer = SpectralViewer()
     viewer.show()
-    app.exec()
+    try:
+        app.exec()
+    except Exception as e:
+        print(e)
 
 
 def setup_logger():
@@ -24,6 +29,7 @@ def setup_logger():
 
     logger.addHandler(console_handler)
     logger.info(f"Started SpectralViewer")
+
 
 
 if __name__ == "__main__":
