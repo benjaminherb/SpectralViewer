@@ -36,13 +36,20 @@ def _load_mat(path):
         'Spectral Bands': spectral_image.shape[2],
         'Spectral Range': f"{min(wavelengths)} - {max(wavelengths)} nm",
         'Data Type': spectral_image.dtype.name,
-        'Value Range': f"{spectral_image.min()} - {spectral_image.max()}",
+        'Value Range': f"{spectral_image.min():.2f} - {spectral_image.max():.2f}",
     }
 
     if 'metadata' in mat:
         file_metadata = mat.get('metadata')
         if hasattr(file_metadata, 'illumination'):
             update_custom_illuminant(wavelengths, file_metadata.illumination, 'File')
+        metadata.update({
+            'Date': file_metadata.date,
+            'Integration Time': file_metadata.tint,
+            'Mode': file_metadata.mode,
+            'Original Value Range': f"{file_metadata.min} - {file_metadata.max}",
+            'Exposure': file_metadata.exposure,
+        })
 
 
     return SpectralImage(spectral_image, wavelengths, metadata)
