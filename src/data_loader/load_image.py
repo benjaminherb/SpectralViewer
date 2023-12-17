@@ -41,7 +41,7 @@ def _load_mat(path):
 
     if 'metadata' in mat:
         file_metadata = mat.get('metadata')
-        if hasattr(file_metadata, 'illumination') and file_metadata.illumination:
+        if hasattr(file_metadata, 'illumination') and file_metadata.illumination is not None:
             update_custom_illuminant(wavelengths, file_metadata.illumination, 'File')
         metadata.update({
             'Date': file_metadata.date,
