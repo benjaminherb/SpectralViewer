@@ -1,9 +1,12 @@
 import os
 import numpy as np
 from PyQt6 import QtWidgets
+import logging
 from src.data_loader.load_image import load_spectral_image
 from src.data_loader.load_illuminants import update_custom_illuminant
 from copy import deepcopy
+
+log = logging.getLogger(__name__)
 
 
 class SourceTab(QtWidgets.QWidget):
@@ -14,7 +17,7 @@ class SourceTab(QtWidgets.QWidget):
 
         # Input field
         self.image_path_input = QtWidgets.QLineEdit()
-        self.image_path_input.setText("./res/images/054/capture/054.raw")
+        # self.image_path_input.setText("./res/images/054/capture/054.raw")
         self.image_path_button = QtWidgets.QPushButton("Load Image")
         self.image_path_button.pressed.connect(self._choose_file)
 
@@ -90,13 +93,16 @@ class SourceTab(QtWidgets.QWidget):
 
     def load_image(self):
         image_path = self.get_path()
+
         try:
             self.spectral_image = load_spectral_image(image_path)
+            if not self.spectral_image:
+                return
             self._rotate_and_flip()
             self._update_metadata()
 
         except OSError as e:
-            print(e)
+            log.error(f'Error loading image {image_path}: {e}')
 
     def _rotate_and_flip(self):
         # the index indicates how often the image is rotated by 90°

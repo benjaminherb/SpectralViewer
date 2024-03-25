@@ -24,7 +24,7 @@ class SpectralViewer(QtWidgets.QMainWindow):
 
         # control panel
         self.control_widget = QtWidgets.QWidget()
-        self.control_widget.setMinimumWidth(800)
+        self.control_widget.setMinimumWidth(650)
 
         # tabs
         self.source_tab = SourceTab()
@@ -68,6 +68,11 @@ class SpectralViewer(QtWidgets.QMainWindow):
     def process_image(self):
         log.info("Loading image")
         spectral_image = self.source_tab.get_image()
+
+        if not spectral_image:  # default image
+            default_image = np.zeros([512, 512, 3])
+            default_image[:, :, :] = 236/255
+            return default_image
 
         # image processing
         spectral_image = self.spectral_operations_tab.process(spectral_image)

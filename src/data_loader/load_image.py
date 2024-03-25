@@ -24,6 +24,7 @@ def load_spectral_image(path):
         else:
             return _load_specim(path)
 
+    raise OSError('Invalid spectral image path')
 
 def _load_mat(path):
     mat = scipy.io.loadmat(path, struct_as_record=False, squeeze_me=True)
