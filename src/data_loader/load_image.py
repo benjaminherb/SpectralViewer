@@ -26,6 +26,7 @@ def load_spectral_image(path):
 
     raise OSError('Invalid spectral image path')
 
+
 def _load_mat(path):
     mat = scipy.io.loadmat(path, struct_as_record=False, squeeze_me=True)
     spectral_image = mat['data']
@@ -42,7 +43,7 @@ def _load_mat(path):
 
     if 'metadata' in mat:
         file_metadata = mat.get('metadata')
-        if hasattr(file_metadata, 'illumination') and file_metadata.illumination is not None:
+        if hasattr(file_metadata, 'illumination') and file_metadata.illumination.size:
             update_custom_illuminant(wavelengths, file_metadata.illumination, 'File')
         metadata.update({
             'Date': file_metadata.date,
